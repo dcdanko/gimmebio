@@ -13,7 +13,7 @@ setuptools.setup(
 
     packages=setuptools.find_packages(),
 
-    ext_modules = [setuptools.Extension("ckmers", ["cext_gimmebio/_ckmers.c","cext_gimmebio/ckmers.c"])],
+    ext_modules = [setuptools.Extension("cseqs", ["cext_gimmebio/_cseqs.c","cext_gimmebio/cseqs.c"])],
     
     install_requires=[],
 

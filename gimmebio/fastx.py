@@ -1,4 +1,4 @@
-
+import sys
 
 ################################################################################
 
@@ -6,15 +6,24 @@ class Fastx:
     def __init__(self):
         pass
     
-    def parseIdLine(self,sid):
-        sid = sid.strip()[1:].split()
+    def parseIdLine(self,rsid):
+        sid = rsid.strip()
+        if sid[0] in ['>', '@']:
+            sid = sid[1:]
+        sid = sid.split()
         try:
             self.tags = sid[1:]
         except IndexError as ie:
             self.tags = []
-        self.sid = sid[0]
-    
-
+        try:
+            self.sid = sid[0]
+        except IndexError as ie:
+            sys.stderr.write('IDLINE: {}\n'.format(rsid))
+            raise ie
+            
+    def __len__(self):
+        return len(self.seq)
+        
 class Fasta( Fastx):
 
     def __init__(self, sid, seq):
@@ -38,8 +47,8 @@ class Fastq( Fastx):
 
     def __init__(self, sid, seq, delim, qual):
         self.parseIdLine(sid)
-        self.seq = self.seq.strip()
-        self.sdelim = delim.strip()
+        self.seq = seq.strip()
+        self.delim = delim.strip()
         self.qual = qual.strip()
 
         assert len(self.qual) == len(self.seq)
@@ -66,8 +75,15 @@ class ReadPair:
     def __init__(self, r1, r2):
         assert r1.sid == r2.sid
         assert type(r1) == type(r2)
+        self.sid = r1.sid
         self.r1 = r1
         self.r2 = r2
+
+    def __len__(self):
+        return len(self.r1) + len(self.r2)
+
+    def __str__(self):
+        return str(self.r1) + '\n' + str(self.r2)
         
 def iterChunks(filelike, n):
     chunk = []
@@ -79,6 +95,8 @@ def iterChunks(filelike, n):
     if len(chunk) > 0:
         yield chunk
 
+
+        
 ################################################################################
         
 def iterFastq(filelike, interleaved=False):

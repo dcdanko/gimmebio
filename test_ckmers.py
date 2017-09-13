@@ -1,12 +1,20 @@
-import ckmers
-import gimmebio.kmers as kmers
+import cseqs
 
 seq = 'ATCGGTCAGC' # 10 bases
 
 power = 3
 radix = 7
 
-fps = kmers.rabinFingerprints(seq, 1 + 2**power, prime=radix)
-print(fps)
-print(ckmers.nextRabinFingerprint(fps[0][1], 0, 1, power, radix))
-print(ckmers.rabinFingerprints(seq, 10, power, radix))
+
+def runCatch( func, *args):
+    print(func)
+    try:
+        print(func(*args))
+    except Exception as e:
+        print(e)
+
+runCatch( cseqs.rabinFingerprints, seq, 10, power, radix)
+runCatch( cseqs.makeKmers, seq, len(seq), 3)
+runCatch( cseqs.makeCanonicalKmers, seq, len(seq), 3)
+runCatch( cseqs.reverseComplement, seq, len(seq))
+runCatch( cseqs.canonical, seq, len(seq))

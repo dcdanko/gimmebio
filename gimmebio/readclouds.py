@@ -27,7 +27,7 @@ class ChromiumReadPair( ReadPair):
                 if tag != self.barcode:
                     raise GemcodeMismatchException()
     @classmethod
-    def fromReadPair(class, readPair):
+    def fromReadPair(cls, readPair):
         return ChromiumReadPair( readPair.r1, readPair.r2)
 
 
@@ -42,22 +42,32 @@ class ReadCloud:
     def addPair(self, cRP):
         if type(cRP) != ChromiumReadPair:
             raise TypeError()
-        if barcode is not None:
+        if self.barcode is not None:
             if self.barcode != cRP.barcode:
                 raise GemcodeMismatchException()
         else:
             self.barcode = cRP.barcode
         self.readPairs.append(cRP)
 
+    def getSeqs(self):
+        out = []
+        for rP in self.readPairs:
+            out.append(rP.r1.seq)
+            out.append(rP.r2.seq)
+        return out
+        
     def __iter__(self):
         return iter(self.readPairs)
 
     def __str__(self):
         out = ''
-        for rp in rps:
-            out += str(rp)
+        for rp in self.readPairs:
+            out += str(rp) + '\n'
         return out
 
+    def __len__(self):
+        return len(self.readPairs)
+    
 ################################################################################
 
 def iterReadCloud( filelike):
