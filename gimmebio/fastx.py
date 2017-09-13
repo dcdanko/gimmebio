@@ -3,6 +3,9 @@ import sys
 ################################################################################
 
 class Fastx:
+
+    __slots__ = ('tags', 'sid', 'seq')
+    
     def __init__(self):
         pass
     
@@ -26,6 +29,8 @@ class Fastx:
         
 class Fasta( Fastx):
 
+    __slots__ = [] # I am not clear if this is necessary 
+    
     def __init__(self, sid, seq):
         super(Fasta, self).__init__()
         self.parseIdLine(sid)
@@ -45,6 +50,8 @@ class Fasta( Fastx):
     
 class Fastq( Fastx):
 
+    __slots__ = ('delim', 'qual')
+    
     def __init__(self, sid, seq, delim, qual):
         self.parseIdLine(sid)
         self.seq = seq.strip()
@@ -72,6 +79,8 @@ class Fastq( Fastx):
     
 class ReadPair:
 
+    __slots__ = ('r1', 'r2', 'sid')
+    
     def __init__(self, r1, r2):
         assert r1.sid == r2.sid
         assert type(r1) == type(r2)

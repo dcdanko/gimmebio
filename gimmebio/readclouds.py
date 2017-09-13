@@ -13,6 +13,8 @@ class ReadCloudException(Exception):
 
 class ChromiumReadPair( ReadPair):
 
+    __slots__ = ('barcode',)
+
     def __init__(self, r1, r2):
         super( ChromiumReadPair, self).__init__(r1,r2)
         self.barcode = None
@@ -32,6 +34,9 @@ class ChromiumReadPair( ReadPair):
 
 
 class ReadCloud:
+
+    __slots__ = ('barcode', 'readPairs')
+    
     def __init__(self, barcode, readPairs=[]):
         self.barcode = barcode
         self.readPairs = []
