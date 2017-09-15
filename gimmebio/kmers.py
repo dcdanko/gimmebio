@@ -1,6 +1,8 @@
 import cseqs
 from .seqs import *
 import sys
+import numpy as np
+import click
 
 ################################################################################
 
@@ -8,21 +10,25 @@ class MinSparseKmerSet:
     '''
     Represents the kmers in a read
     '''
-    def __init__(self, K, W, seqs):
+    def __init__(self, K, W, seqs, canonical=True):
         self.K = K
         self.W = W
         self.nseqs = len(seqs)
-        self.makeKmers(seqs)
+        self.makeKmers(seqs, canonical)
         
-    def makeKmers(self, seqs):
+    def makeKmers(self, seqs, canonical):
         self.kmers = {}
         for seq in seqs:
-            kmers = cseqs.makeCanonicalKmers(seq, len(seq), self.K)
+            if canonical:
+                kmers = cseqs.makeCanonicalKmers(seq, len(seq), self.K)
+            else:
+                kmers = cseqs.makeKmers(seq, len(seq), self.K)
             kmers = [(kmer, hash(kmer)) for kmer in kmers]
             kmersInWindow = self.W - self.K + 1
             numWindows =  len(kmers) - kmersInWindow + 1
             for windowStart in range( numWindows):
                 window = kmers[windowStart:windowStart + kmersInWindow]
+
                 if windowStart == 0:
                     # first window, minimum does not exist yet
                     minKmer = min(window,key=lambda x: x[1])
@@ -72,6 +78,100 @@ class MinSparseKmerSet:
         return len(self.kmers)
 
 
+class MinGmerSet:
+    '''
+    Represents the kmers in a read
+    '''
+    def __init__(self, K, W, seqs, pcov=8):
+        self.K = K
+        self.W = W
+        self.gmerBuilder = GmerBuilder(W,K,pcov)
+        self.nseqs = len(seqs)
+        self.makeGmers(seqs)
+        
+    def makeGmers(self, seqs):
+        self.kmers = {}
+        for seq in seqs:
+            kmers = cseqs.makeCanonicalKmers(seq, len(seq), self.W)
+            for kmer in kmers:
+                gmers = self.gmerBuilder.buildGmers(kmer)
+                gmers = [(gmer, hash(gmer)) for gmer in gmers]
+                gmer = min(gmers,key=lambda x: x[1])
+                self.kmers[gmer]= 1
+                
+    def getCount(self, kmer):
+        try:
+            return self.kmers[kmer]
+        except KeyError:
+            return 0
+
+    def overlap(self, other):
+        'Return a list of kmers that occur in both sets'
+        
+        assert type(other) == type(self)
+        out = []
+        for kmer in other:
+            if kmer in self:
+                out.append(kmer)
+        return out
+    
+    def __contains__(self, kmer):
+        return kmer in self.kmers
+
+    def __iter__(self):
+        return iter(self.kmers.keys())
+
+    def withCounts(self):
+        return self.kmers.items()
+    
+    def __str__(self):
+        out = sorted( self.kmers.keys())
+        return ' '.join(out)
+
+    def __len__(self):
+        return len(self.kmers)
+
+
+class GmerBuilder:
+
+    def __init__(self, inputK, outputK, posCov):
+        self.inputK = inputK
+        self.outputK = outputK
+        self.posCov = posCov
+        self.totalBlocks = posCov
+        self.gmersPerBlock = inputK // outputK # each block covers each position exactly once
+        self.totalGmers = self.gmersPerBlock * posCov
+        self._buildMatrix()
+
+    def _buildMatrix(self):
+        initBlock = np.zeros((self.gmersPerBlock, self.inputK))
+        for gind in range(self.gmersPerBlock):
+            for i in range(self.outputK):
+                initBlock[gind, gind*self.outputK + i] = 1
+        # initBlock is in the 'correct' format but we will need it transposed for permuations           
+        initBlock = initBlock.transpose() 
+                
+        blocks = []
+        for _ in range(self.totalBlocks):
+            block = np.random.permutation(initBlock).transpose()
+            blocks.append(block)
+        mat = np.concatenate(blocks, axis=0)
+        indexLists = [ [] ] *  self.totalGmers
+        for i, j in np.argwhere( mat > 0):
+            indexLists[i].append(j)
+        self.indexLists = indexLists
+
+    def buildGmers(self, kmer):
+        assert len(kmer) == self.inputK
+        out = []
+        for indList in self.indexLists:
+            gmer = ''
+            for ind in sorted(indList):
+                gmer += kmer[ind]
+            out.append(gmer)
+        return out
+
+    
 class KmerSet:
     '''
     Represents the kmers in a read
@@ -311,3 +411,20 @@ def makeKmers(seq, K, canon=True):
         out.append(kmer)
     
     return out
+
+@click.command()
+@click.option('-k', '--kmer-len', default=32, help='Length of kmers')
+@click.option('--canonical/--non-canonical', default=False, help='Canonicalize kmers')
+def makeKmers_CLI(kmer_len, canonical):
+    for line in sys.stdin:
+        seq = line.strip()
+        if canonical:
+            kmers = cseqs.makeCanonicalKmers(seq, len(seq), kmer_len)
+        else:
+            kmers = cseqs.makeKmers(seq, len(seq), kmer_len)
+        for kmer in kmers:
+            print(kmer)
+
+        
+if __name__ == '__main__':
+    makeKmers_CLI()
