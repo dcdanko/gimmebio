@@ -24,7 +24,8 @@ setuptools.setup(
     entry_points= {
         'console_scripts': [
             'highlight_dna=gimmebio.highlight_dna:highlightDNA_CLI',
-            'make_kmers=gimmebio.kmers:makeKmers_CLI'
+            'make_kmers=gimmebio.kmers:makeKmers_CLI',
+            'make_alpha_diversity_table=gimmebio.metagenomics.intrasample_diversity:main'
             ]
         },
     
