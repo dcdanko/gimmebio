@@ -23,9 +23,17 @@ setuptools.setup(
 
     entry_points= {
         'console_scripts': [
-            'highlight_dna=gimmebio.highlight_dna:highlightDNA_CLI',
-            'make_kmers=gimmebio.kmers:makeKmers_CLI',
-            'make_alpha_diversity_table=gimmebio.metagenomics.intrasample_diversity:main'
+            'gb_highlight_dna=gimmebio.highlight_dna:highlightDNA_CLI',
+            'gb_make_kmers=gimmebio.kmers:makeKmers_CLI',
+            'gb_make_minsparse_kmers=gimmebio.kmers:makeMinSparseKmers_CLI',            
+            'gb_make_alpha_diversity_table=gimmebio.metagenomics.intrasample_diversity:main',
+            'gb_process_mpa_files=gimmebio.metagenomics.clip_aggregate_mpa:main',
+            'gb_clean_mash_distances=gimmebio.metagenomics.clean_mash_distances:main',
+            'gb_aggregate_intersample_distances=gimmebio.metagenomics.aggregate_intersample_diversity:main',
+            'gb_aggregate_list=gimmebio.metagenomics.general_aggregate:main',
+            'gb_bc_stats=gimmebio.linked_reads.bc_stats:main',            
+            'gb_aggregate_abr_tables=gimmebio.metagenomics.abr_table:main',
+            'gb_species_tables=gimmebio.metagenomics.species_table:main'            
             ]
         },
     
