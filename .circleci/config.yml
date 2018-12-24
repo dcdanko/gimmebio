@@ -51,19 +51,19 @@ default_test: &default_test
 
 # CircleCI Jobs
 jobs:
-  # ----- ATHENA -----
+  # ----- SEQS -----
   test_seqs:
     <<: *default_test
     environment:
       MODULE_NAME: seqs
 
-  # ----- BRIDGES -----
+  # ----- KMERS -----
   test_kmers:
     <<: *default_test
     environment:
       MODULE_NAME: kmers
 
-  # ----- HUDSON_ALPHA -----
+  # ----- LINKED READS -----
   test_linked_reads:
     <<: *default_test
     environment:

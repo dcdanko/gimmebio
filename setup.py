@@ -79,4 +79,6 @@ setup(
         'install': InstallCmd,
         'develop': DevelopCmd,
     },
+    packages=[PACKAGE_NAME],
+    package_dir={PACKAGE_NAME: 'gimmebio'},
 )
