@@ -1,22 +1,13 @@
-from .fastx import *
+from gimmebio.seqs.fastx import *
 
-################################################################################
 
-class GemcodeMismatchException( Exception):
-    pass
-
-class NoGemcodeException( Exception):
-    pass
-
-class ReadCloudException(Exception):
-    pass
-
-class ChromiumReadPair( ReadPair):
+class ChromiumReadPair(ReadPair):
+    """Represent a pair of barcoded reads."""
 
     __slots__ = ('barcode',)
 
     def __init__(self, r1, r2):
-        super( ChromiumReadPair, self).__init__(r1,r2)
+        super(ChromiumReadPair, self).__init__(r1, r2)
         self.barcode = None
         for tag in r1.tags:
             if 'BX:' in tag:
@@ -28,22 +19,24 @@ class ChromiumReadPair( ReadPair):
             if 'BX:' in tag:
                 if tag != self.barcode:
                     raise GemcodeMismatchException()
+
     @classmethod
     def fromReadPair(cls, readPair):
-        return ChromiumReadPair( readPair.r1, readPair.r2)
+        return ChromiumReadPair(readPair.r1, readPair.r2)
 
 
 class ReadCloud:
+    """Represent a read cloud."""
 
     __slots__ = ('barcode', 'readPairs')
-    
+
     def __init__(self, barcode, readPairs=[]):
         self.barcode = barcode
         self.readPairs = []
-        
+
         for rP in readPairs:
             self.addPair(rP)
-            
+
     def addPair(self, cRP):
         if type(cRP) != ChromiumReadPair:
             raise TypeError()
@@ -60,7 +53,7 @@ class ReadCloud:
             out.append(rP.r1.seq)
             out.append(rP.r2.seq)
         return out
-        
+
     def __iter__(self):
         return iter(self.readPairs)
 
@@ -72,22 +65,3 @@ class ReadCloud:
 
     def __len__(self):
         return len(self.readPairs)
-    
-################################################################################
-
-def iterReadCloud( filelike):
-    rC = ReadCloud(None)
-    for rP in iterFastq( filelike, interleaved=True):
-        try:
-            cRP = ChromiumReadPair.fromReadPair(rP)
-        except  NoGemcodeException as nge:
-            continue
-
-        try:
-            rC.addPair(cRP)
-        except GemcodeMismatchException as gme:
-            yield rC
-            rC = ReadCloud( cRP.barcode)
-            rC.addPair(cRP)
-    yield rC
-    

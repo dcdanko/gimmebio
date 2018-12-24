@@ -1,9 +1,7 @@
 
 
-
-################################################################################
-
 def baseToInt(base):
+    """Return an integer code for the base."""
     if base == 'A':
         return 0
     elif base == 'C':
@@ -15,10 +13,12 @@ def baseToInt(base):
     else:
         return 4
 
+
 def rcBase(base):
+    """Return the reverse complement of the base."""
     if base == 'A':
         return 'T'
-    elif base =='C':
+    elif base == 'C':
         return 'G'
     elif base == 'G':
         return 'C'
@@ -29,15 +29,18 @@ def rcBase(base):
 
 
 def reverseComplement(kmer):
+    """Return the reverse complement of the sequence."""
     rc = ''
     for base in kmer[::-1]:
-        rc += rcBase( base)
+        rc += rcBase(base)
     return rc
-        
-def canonical( kmer):
+
+
+def canonical(kmer):
+    """Return the canonical representation of a sequence."""
     rc = ''
     for base in kmer[::-1]:
-        rc += rcBase( base)
+        rc += rcBase(base)
         if kmer < rc:
             return kmer
     return rc

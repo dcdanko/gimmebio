@@ -3,13 +3,14 @@ import sys
 ################################################################################
 
 class Fastx:
+    """Represent a sequence record."""
 
     __slots__ = ('tags', 'sid', 'seq')
-    
+
     def __init__(self):
         pass
-    
-    def parseIdLine(self,rsid):
+
+    def parseIdLine(self, rsid):
         sid = rsid.strip()
         if sid[0] in ['>', '@']:
             sid = sid[1:]
@@ -23,21 +24,21 @@ class Fastx:
         except IndexError as ie:
             sys.stderr.write('IDLINE: {}\n'.format(rsid))
             raise ie
-            
+
     def __len__(self):
         return len(self.seq)
-        
-class Fasta( Fastx):
 
-    __slots__ = [] # I am not clear if this is necessary 
-    
+
+class Fasta(Fastx):
+    """Represent a record from a fasta file (no qulaity line)."""
+
     def __init__(self, sid, seq):
         super(Fasta, self).__init__()
         self.parseIdLine(sid)
         self.seq = seq.strip()
 
     def __str__(self):
-        tags = '\t'.join( self.tags)
+        tags = '\t'.join(self.tags)
         out = '>{} {}\n{}\n'.format(self.sid, tags, self.seq)
         return out
 
@@ -48,12 +49,14 @@ class Fasta( Fastx):
         if len(inp) != 2:
             print(inp)
             assert False
-        return Fasta( inp[0], inp[1])
-    
-class Fastq( Fastx):
+        return Fasta(inp[0], inp[1])
+
+
+class Fastq(Fastx):
+    """Represnt a record from a fastq file."""
 
     __slots__ = ('delim', 'qual')
-    
+
     def __init__(self, sid, seq, delim, qual):
         self.parseIdLine(sid)
         self.seq = seq.strip()
@@ -61,7 +64,7 @@ class Fastq( Fastx):
         self.qual = qual.strip()
 
         assert len(self.qual) == len(self.seq)
-        
+
     def __str__(self):
         tags = '\t'.join(self.tags)
         out = '@{}\t{}\n{}\n{}\n{}'.format(self.sid,
@@ -76,13 +79,14 @@ class Fastq( Fastx):
         if type(inp) == str:
             inp = inp.split('\n')
         assert len(inp) == 4
-        return Fastq( inp[0], inp[1], inp[2], inp[3])
+        return Fastq(inp[0], inp[1], inp[2], inp[3])
 
-    
+
 class ReadPair:
+    """Represent a pair of reads."""
 
     __slots__ = ('r1', 'r2', 'sid')
-    
+
     def __init__(self, r1, r2):
         assert r1.sid == r2.sid
         assert type(r1) == type(r2)
@@ -95,43 +99,3 @@ class ReadPair:
 
     def __str__(self):
         return str(self.r1) + '\n' + str(self.r2)
-        
-def iterChunks(filelike, n):
-    chunk = []
-    for line in filelike:
-        chunk.append(line)
-        if len(chunk) == n:
-            yield chunk
-            chunk = []
-    if len(chunk) > 0:
-        yield chunk
-
-
-        
-################################################################################
-        
-def iterFastq(filelike, interleaved=False):
-    n = 4
-    if interleaved:
-        n = 8
-    for chunk in iterChunks(filelike, n):
-        r1 = Fastq.fromRaw( chunk[:4])
-        if interleaved:
-            r2 = Fastq.fromRaw( chunk[4:])
-            yield ReadPair(r1,r2)
-        else:
-            yield r1
-
-
-def iterFasta(filelike):
-    curChunk = [None, '']
-    for line in filelike:
-        line = line.strip()
-        if line[0] == '>':
-            if curChunk[0] is not None:
-                yield Fasta.fromRaw(curChunk)
-                curChunk = [None, '']
-            curChunk[0] = line
-        else:
-            curChunk[1] += line
-    yield Fasta.fromRaw(curChunk)
