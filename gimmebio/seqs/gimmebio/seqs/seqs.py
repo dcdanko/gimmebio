@@ -2,30 +2,30 @@
 
 def baseToInt(base):
     """Return an integer code for the base."""
+    base = base.upper()
     if base == 'A':
         return 0
-    elif base == 'C':
+    if base == 'C':
         return 1
-    elif base == 'G':
+    if base == 'G':
         return 2
-    elif base == 'T':
+    if base == 'T':
         return 3
-    else:
-        return 4
+    return 4
 
 
 def rcBase(base):
     """Return the reverse complement of the base."""
+    base = base.upper()
     if base == 'A':
         return 'T'
-    elif base == 'C':
+    if base == 'C':
         return 'G'
-    elif base == 'G':
+    if base == 'G':
         return 'C'
-    elif base == 'T':
+    if base == 'T':
         return 'A'
-    else:
-        return 'N'
+    return 'N'
 
 
 def reverseComplement(kmer):

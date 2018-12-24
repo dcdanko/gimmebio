@@ -1,4 +1,8 @@
-from gimmebio.seqs.fastx import *
+"""Represent readclouds."""
+
+from gimmebio.seqs.fastx import ReadPair
+
+from .exceptions import NoGemcodeException, GemcodeMismatchException
 
 
 class ChromiumReadPair(ReadPair):
@@ -38,7 +42,7 @@ class ReadCloud:
             self.addPair(rP)
 
     def addPair(self, cRP):
-        if type(cRP) != ChromiumReadPair:
+        if not isinstance(cRP, ChromiumReadPair):
             raise TypeError()
         if self.barcode is not None:
             if self.barcode != cRP.barcode:

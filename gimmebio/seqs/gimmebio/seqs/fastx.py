@@ -1,6 +1,5 @@
 import sys
 
-################################################################################
 
 class Fastx:
     """Represent a sequence record."""
@@ -44,7 +43,7 @@ class Fasta(Fastx):
 
     @classmethod
     def fromRaw(cls, inp):
-        if type(inp) == str:
+        if isinstance(inp, str):
             inp = inp.split('\n')
         if len(inp) != 2:
             print(inp)
@@ -89,7 +88,7 @@ class ReadPair:
 
     def __init__(self, r1, r2):
         assert r1.sid == r2.sid
-        assert type(r1) == type(r2)
+        assert isinstance(r1, type(r2))
         self.sid = r1.sid
         self.r1 = r1
         self.r2 = r2

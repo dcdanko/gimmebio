@@ -81,7 +81,7 @@ class MinGmerSet:
 
     def overlap(self, other):
         """Return a list of kmers that occur in both sets."""
-        assert type(other) == type(self)
+        assert isinstance(other, type(self))
         out = []
         for kmer in other:
             if kmer in self:

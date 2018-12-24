@@ -18,7 +18,7 @@ class KmerSet:
 
     def __init__(self, Ks, seqs, canon=True, blockedKmers=None, allowedKmers=None):
         self.Ks = Ks
-        if type(self.Ks) == int:
+        if isinstance(self.Ks, int):
             self.Ks = [self.Ks]
         self.canon = canon
         self.nseqs = len(seqs)
@@ -54,7 +54,7 @@ class KmerSet:
 
     def overlap(self, other):
         """Return a list of kmers that occur in both sets."""
-        assert type(other) == type(self)
+        assert isinstance(other, type(self))
         out = []
         for kmer in other:
             if kmer in self:

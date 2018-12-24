@@ -74,7 +74,7 @@ class RabinKmerSet:
             rHash += gimmebio.seqs.baseToInt(base) * (self.radix ** power)
 
         t = self.masterTbl[rHash]
-        if type(t) is dict:
+        if isinstance(t, dict):
             if kmer in t:
                 count += t[kmer]
         else:
@@ -87,7 +87,7 @@ class RabinKmerSet:
         return count
 
     def getOverlappingKmerCounts(self, other):
-        assert type(other) == type(self)
+        assert isinstance(other, type(self))
         kmerCounts = {}  # keys are kmers, values are the number of times they occur in each
 
         def countKmer(kmer):
@@ -97,11 +97,11 @@ class RabinKmerSet:
                 kmerCounts[kmer] = 1
 
         for i, myTbl in enumerate(self.tbl):
-            if len(myTbl) == 0:
+            if not myTbl:
                 continue
 
             theirTbl = other.tbl[i]
-            if len(theirTbl) == 0:
+            if not theirTbl:
                 continue
             print('length_my_table: {}, length_their_table: {}'.format(len(myTbl), len(theirTbl)))
 
@@ -123,7 +123,7 @@ class RabinKmerSet:
 
     def __iter__(self):
         for tbl in self.tbl:
-            if type(tbl) is dict:
+            if isinstance(tbl, dict):
                 for kmer in tbl.keys():
                     yield kmer
             else:
