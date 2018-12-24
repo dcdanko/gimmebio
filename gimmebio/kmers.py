@@ -401,15 +401,13 @@ def rabinFingerprints(seq, k, prime=7, modulo=None):
     return hashes
 
 
-
 def makeKmers(seq, K, canon=True):
     out = []
-    for start in range(len(seq)-K+1):
-        kmer = seq[start:start+K]
+    for start in range(len(seq) - K + 1):
+        kmer = seq[start:start + K]
         if canon:
             kmer = canonical(kmer)
         out.append(kmer)
-    
     return out
 
 @click.command()
