@@ -45,7 +45,9 @@ class Fasta( Fastx):
     def fromRaw(cls, inp):
         if type(inp) == str:
             inp = inp.split('\n')
-        assert len(inp) == 2
+        if len(inp) != 2:
+            print(inp)
+            assert False
         return Fasta( inp[0], inp[1])
     
 class Fastq( Fastx):
@@ -121,16 +123,15 @@ def iterFastq(filelike, interleaved=False):
             yield r1
 
 
-def iterFasta(filelike, interleaved=False):
-    n = 2
-    if interleaved:
-        n = 4
-    for chunk in iterChunks(filelike, n):
-        r1 = Fasta.fromRaw( chunk[:2])
-        if interleaved:
-            r2 = Fasta.fromRaw( chunk[2:])
-            yield ReadPair(r1,r2)
+def iterFasta(filelike):
+    curChunk = [None, '']
+    for line in filelike:
+        line = line.strip()
+        if line[0] == '>':
+            if curChunk[0] is not None:
+                yield Fasta.fromRaw(curChunk)
+                curChunk = [None, '']
+            curChunk[0] = line
         else:
-            yield r1
-            
-            
+            curChunk[1] += line
+    yield Fasta.fromRaw(curChunk)

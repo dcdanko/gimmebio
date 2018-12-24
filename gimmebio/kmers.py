@@ -60,6 +60,9 @@ class MinSparseKmerSet:
             if kmer in self:
                 out.append(kmer)
         return out
+
+    def remove(self, kmer):
+        del self.kmers[kmer]
     
     def __contains__(self, kmer):
         return kmer in self.kmers
@@ -423,6 +426,20 @@ def makeKmers_CLI(kmer_len, canonical):
         for kmer in kmers:
             print(kmer)
 
+@click.command()
+@click.option('-k', '--kmer-len', default=20, help='Length of kmers')
+@click.option('-w', '--window-len', default=40, help='Length of window, in bases')
+def makeMinSparseKmers_CLI(kmer_len, window_len):
+    for line in sys.stdin:
+        seq = line.strip()
+        kmers = MinSparseKmerSet(kmer_len, window_len, [seq])
+        for i, kmer in enumerate(kmers):
+            if i == 0:
+                sys.stdout.write(kmer)
+            else:
+                sys.stdout.write('\t{}'.format(kmer))
+        sys.stdout.write('\n')
+        
         
 if __name__ == '__main__':
     makeKmers_CLI()
