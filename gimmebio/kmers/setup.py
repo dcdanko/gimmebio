@@ -1,6 +1,6 @@
 from setuptools import setup
 
-microlib_name = 'gimmebio.kmer'
+microlib_name = 'gimmebio.kmers'
 
 requirements = [
     'gimmebio.seqs',
