@@ -2,7 +2,7 @@
 
 from unittest import TestCase
 
-from gimmebio.kmers.kmers import make_kmers
+from gimmebio.kmers import make_kmers
 
 
 class TestKmers(TestCase):
