@@ -54,7 +54,7 @@ class MinSparseKmerSet:
 
     def overlap(self, other):
         """Return a set of the kmers that occur in both sets."""
-        assert type(other) == type(self)
+        assert isinstance(other, type(self))
         out = set()
         for kmer in other:
             if kmer in self:

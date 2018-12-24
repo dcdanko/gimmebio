@@ -51,7 +51,7 @@ class RabinKmerSet:
                 rHash %= len(self.masterTbl)
                 added = False
                 tbl = self.masterTbl[rHash]
-                if type(tbl) is dict:
+                if isinstance(tbl, dict):
                     if kmer in tbl:
                         tbl[kmer] += 1
                     else:
@@ -106,10 +106,10 @@ class RabinKmerSet:
             print('length_my_table: {}, length_their_table: {}'.format(len(myTbl), len(theirTbl)))
 
             myTblIter = myTbl
-            if type(myTbl) == dict:
+            if isinstance(myTbl, dict):
                 myTblIter = myTbl.items()
 
-            if type(theirTbl) == dict:
+            if isinstance(theirTbl, dict):
                 for kmer, myCount in myTblIter:
                     if kmer in theirTbl:
                         countKmer(kmer)
