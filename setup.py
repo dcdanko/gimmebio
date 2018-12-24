@@ -11,7 +11,7 @@ from setuptools.command.develop import develop
 from setuptools.command.install import install
 
 
-PACKAGE_NAME = 'metasub_utils'
+PACKAGE_NAME = 'gimmebio'
 
 
 SOURCES = {
