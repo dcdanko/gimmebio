@@ -1,0 +1,1 @@
+Normalize taxa according to average genome size
