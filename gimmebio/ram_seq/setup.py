@@ -1,14 +1,14 @@
 from setuptools import setup
 
-microlib_name = 'gimmebio.kmers'
+microlib_name = 'gimmebio.ram_seq'
 
 requirements = [
-    'gimmebio.seqs',
+    'numpy',
 ]
 
 setup(
     name=microlib_name,
-    version='0.2.0',
+    version='0.1.0',
     author='David Danko',
     author_email='dcdanko@gmail.com',
     license='MIT license',
