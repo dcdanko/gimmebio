@@ -1,6 +1,4 @@
-# Dev/Deployment
-sphinx
-sphinx_rtd_theme
-nose
-coverage
-pypi-publisher
+
+--index-url https://pypi.python.org/simple
+../seqs/
+-e .

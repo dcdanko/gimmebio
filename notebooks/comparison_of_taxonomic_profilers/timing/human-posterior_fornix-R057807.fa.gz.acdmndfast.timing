@@ -1,0 +1,23 @@
+	Command being timed: "/gfs/devel/ddanko/ac-diamond-0.1-beta-linux64/ac-diamond blastx -d /gfs/mirror/acdiamond/nr/nr-acdmnd -q fasta.dir/human-posterior_fornix-R057807.fa.gz --threads 10 -a /gfs/scratch/temp.acdmndfast.dir/human-posterior_fornix-R057807.acdmndfast --compress 0 --tmpdir /gfs/scratch"
+	User time (seconds): 19022.09
+	System time (seconds): 396.77
+	Percent of CPU this job got: 893%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 36:12.88
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 23818796
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 41246285
+	Voluntary context switches: 7982052
+	Involuntary context switches: 1967011
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 0
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

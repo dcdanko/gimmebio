@@ -1,0 +1,23 @@
+	Command being timed: "diamond blastx -d /gfs/mirror/diamond/nr.dmnd -q fasta.dir/cowrumen-dna-R983265.fa.gz --threads 10 -a /gfs/scratch/temp.dmndfast.dir/cowrumen-dna-R983265.dmndfast --compress 0 --tmpdir /gfs/scratch"
+	User time (seconds): 292855.99
+	System time (seconds): 2949.68
+	Percent of CPU this job got: 917%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 8:57:17
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 19169816
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 939942565
+	Voluntary context switches: 8933434
+	Involuntary context switches: 29994267
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 0
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
