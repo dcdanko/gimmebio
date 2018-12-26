@@ -2,6 +2,7 @@ from scipy.optimize import linprog
 import numpy as np
 import pandas as pd
 
+
 class OptimizationFailedError(Exception):
     pass
 
@@ -10,7 +11,7 @@ def findTaxaAGSVec(proportions, sampleAGS, taxaBounds=True):
     nsamples, ntaxa = proportions.shape
     b = np.concatenate([sampleAGS, -1 * sampleAGS])
     if taxaBounds:
-        taxaMax = 10 * 1000 * 1000 
+        taxaMax = 10 * 1000 * 1000
         taxaMin = 1000 * 1000
         b = np.concatenate([b,
                             -1 * taxaMin * np.ones(ntaxa),
