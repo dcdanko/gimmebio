@@ -1,0 +1,23 @@
+	Command being timed: "kraken --db /gfs/mirror/kraken/standard/kraken_standard_db --threads 10 --fastq-input --gzip-compressed filtered.stool-day0-R4.fastq.gz"
+	User time (seconds): 2623.23
+	System time (seconds): 15930.61
+	Percent of CPU this job got: 28%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 17:54:32
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 59996100
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 15590106
+	Voluntary context switches: 735813371
+	Involuntary context switches: 1896727
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 0
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

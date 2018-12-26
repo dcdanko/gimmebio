@@ -1,0 +1,13 @@
+Parameters
+metagenome:	/workdir/dcd97/FMTchrons/SRR3582174/SRR3582174_1.fastq,/workdir/dcd97/FMTchrons/SRR3582174/SRR3582174_2.fastq
+reads_sampled:	2000000
+trimmed_length:	100
+min_quality:	-5
+mean_quality:	-5
+filter_dups:	False
+max_unknown:	100
+
+Results
+average_genome_size:	6854486.25991
+total_bases:	5123560161
+genome_equivilants:	747.475444071

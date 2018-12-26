@@ -1,0 +1,99 @@
+import gzip
+import sys
+import subprocess as sp
+import numpy as np
+import pandas as pd
+
+def countAligned(alignfile):
+    species = alignfile.split('/')[-1].split('.')[0].split('-')[0].split('_')[0]
+    cmd = " cat {} |  grep -v '|'".format(alignfile)
+    try:
+        data = sp.check_output(cmd,shell=True)
+    except:
+        print("failed to run: {}".format(cmd))
+        return False
+    data = data.split('\n')
+    out = {
+        'k__Bacteria':0,  
+        'k__Viruses':0,
+        'k__Eukaryota':0, 
+        'k__Archaea':0,           
+    }
+    for line in data:
+        line = line.split()
+        if len(line) != 2 or 'Sample' in line[0]:
+            continue
+        out[line[0].strip()] = 1000*10*float(line[1])#Reads Per Million
+    return (species, out)
+
+
+def mergeAligned(outputs):
+    merged = {}
+    for species, out in outputs:
+        for kind, val in out.items():
+            if kind not in merged:
+                merged[kind] = {}
+            if species not in merged[kind]:
+                merged[kind][species] = []
+            merged[kind][species].append(val)
+    return merged
+
+def buffer(outputs):
+    buff = {}
+    for species, out in outputs:
+        if species not in buff:
+            buff[species] = []
+        buff[species].append(out)
+
+    for species,outs in buff.items():
+        top = 0
+        if len(outs) > len(top):
+            top = len(outs)
+        for out in outs:
+            for _ in range(top - len(out)):
+                out.append(0)
+    
+
+def crunchAligned(merged):
+    crunched = {kind:{} for kind in merged.keys()}
+    for kind, val in merged.items():
+        for species, vals in val.items():
+            u = np.mean(vals)
+            sd = np.std(vals)
+            crunched[kind][species] = (u,sd)
+    return crunched
+
+def prettyprint(crunched):
+    print("\n--------------------------------------------------------\n")
+    outline = "{:.1f} ({:.1f}) \t& {:.1f} ({:.1f}) \t& {:.1f} ({:.1f}) \t& {:.1f} ({:.1f}) \t\\\\"
+    for row in crunched.itertuples():
+        print(row)
+        ar = []
+        for v in row[1:]:
+            print(v)
+            ar.append(float(v[0]))
+            ar.append(float(v[1]))
+        print(ar)
+        print(outline.format(*ar))
+        
+    
+def main(args):
+    if len(args) == 0:
+        print("Usage: metaphlan-profile-files")
+        return 1
+
+    outputs = []
+    for f in args:
+        a = countAligned(f)
+        if not a:
+            continue
+        outputs.append(a)
+    
+    merged = mergeAligned(outputs)
+    crunched = crunchAligned(merged)
+    crunched = pd.DataFrame(crunched)
+    print(crunched)
+    prettyprint(crunched)
+    
+if __name__ == '__main__':
+    main(sys.argv[1:])

@@ -1,0 +1,23 @@
+	Command being timed: "kraken --db /gfs/mirror/kraken/standard/kraken_standard_db --threads 10 --fastq-input --gzip-compressed rumen-rnahigh-R873465.fastq.gz"
+	User time (seconds): 1687.78
+	System time (seconds): 9286.70
+	Percent of CPU this job got: 261%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 1:09:58
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 73215608
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 19056470
+	Voluntary context switches: 437949258
+	Involuntary context switches: 679146
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 0
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

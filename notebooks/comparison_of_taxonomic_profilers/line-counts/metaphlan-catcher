@@ -1,0 +1,61 @@
+failed to run:  cat /gfs/work/ddanko/taxonomic_profiler_comparison/analysis/actual/human_qin/metaphlan2.dir/human_qin-CD-R14.mp2prof.tsv |  grep -v '|'
+failed to run:  cat /gfs/work/ddanko/taxonomic_profiler_comparison/analysis/actual/human_qin/metaphlan2.dir/human_qin-CD-R15.mp2prof.tsv |  grep -v '|'
+failed to run:  cat /gfs/work/ddanko/taxonomic_profiler_comparison/analysis/actual/human_qin/metaphlan2.dir/human_qin-CD-R1.mp2prof.tsv |  grep -v '|'
+failed to run:  cat /gfs/work/ddanko/taxonomic_profiler_comparison/analysis/actual/human_qin/metaphlan2.dir/human_qin-CD-R9.mp2prof.tsv |  grep -v '|'
+failed to run:  cat /gfs/work/ddanko/taxonomic_profiler_comparison/analysis/actual/human_qin/metaphlan2.dir/human_qin-HEALTHY-R03.mp2prof.tsv |  grep -v '|'
+failed to run:  cat /gfs/work/ddanko/taxonomic_profiler_comparison/analysis/actual/human_qin/metaphlan2.dir/human_qin-HEALTHY-R16.mp2prof.tsv |  grep -v '|'
+failed to run:  cat /gfs/work/ddanko/taxonomic_profiler_comparison/analysis/actual/human_qin/metaphlan2.dir/human_qin-HEALTHY-R20.mp2prof.tsv |  grep -v '|'
+failed to run:  cat /gfs/work/ddanko/taxonomic_profiler_comparison/analysis/actual/human_qin/metaphlan2.dir/human_qin-UC-R11.mp2prof.tsv |  grep -v '|'
+failed to run:  cat /gfs/work/ddanko/taxonomic_profiler_comparison/analysis/actual/human_qin/metaphlan2.dir/human_qin-UC-R14.mp2prof.tsv |  grep -v '|'
+failed to run:  cat /gfs/work/ddanko/taxonomic_profiler_comparison/analysis/actual/human_qin/metaphlan2.dir/human_qin-UC-R18.mp2prof.tsv |  grep -v '|'
+                               k__Archaea                     k__Bacteria  \
+cowrumen      (251506.475, 137026.275834)     (748425.875, 137061.872231)   
+filtered                       (0.0, 0.0)     (989722.025, 25327.7387337)   
+gpigfecal      (16958.4625, 44867.874393)     (983041.5375, 44867.874393)   
+human      (3592.23111111, 23218.4207759)      (915895.54, 185019.887205)   
+rumen      (1650.81333333, 1717.44634807)  (2838.34666667, 1186.33186356)   
+
+                              k__Eukaryota                      k__Viruses  
+cowrumen                        (0.0, 0.0)        (67.6625, 179.018148085)  
+filtered                        (0.0, 0.0)      (10277.975, 25327.7387337)  
+gpigfecal                       (0.0, 0.0)                      (0.0, 0.0)  
+human       (176.482222222, 721.773425603)  (80335.7444444, 184666.209572)  
+rumen      (0.493333333333, 1.84588431081)  (995510.366667, 2057.45618104)  
+
+--------------------------------------------------------
+
+Pandas(Index='cowrumen', k__Archaea=(251506.47499999998, 137026.27583375887), k__Bacteria=(748425.875, 137061.87223119117), k__Eukaryota=(0.0, 0.0), k__Viruses=(67.662499999999994, 179.01814808490784))
+(251506.47499999998, 137026.27583375887)
+(748425.875, 137061.87223119117)
+(0.0, 0.0)
+(67.662499999999994, 179.01814808490784)
+[251506.47499999998, 137026.27583375887, 748425.875, 137061.87223119117, 0.0, 0.0, 67.6625, 179.01814808490784]
+251506.5 (137026.3) 	& 748425.9 (137061.9) 	& 0.0 (0.0) 	& 67.7 (179.0) 	\\
+Pandas(Index='filtered', k__Archaea=(0.0, 0.0), k__Bacteria=(989722.02500000002, 25327.738733711009), k__Eukaryota=(0.0, 0.0), k__Viruses=(10277.974999999999, 25327.738733711005))
+(0.0, 0.0)
+(989722.02500000002, 25327.738733711009)
+(0.0, 0.0)
+(10277.974999999999, 25327.738733711005)
+[0.0, 0.0, 989722.025, 25327.73873371101, 0.0, 0.0, 10277.974999999999, 25327.738733711005]
+0.0 (0.0) 	& 989722.0 (25327.7) 	& 0.0 (0.0) 	& 10278.0 (25327.7) 	\\
+Pandas(Index='gpigfecal', k__Archaea=(16958.462500000001, 44867.874393014703), k__Bacteria=(983041.53749999998, 44867.874393014717), k__Eukaryota=(0.0, 0.0), k__Viruses=(0.0, 0.0))
+(16958.462500000001, 44867.874393014703)
+(983041.53749999998, 44867.874393014717)
+(0.0, 0.0)
+(0.0, 0.0)
+[16958.4625, 44867.8743930147, 983041.5375, 44867.87439301472, 0.0, 0.0, 0.0, 0.0]
+16958.5 (44867.9) 	& 983041.5 (44867.9) 	& 0.0 (0.0) 	& 0.0 (0.0) 	\\
+Pandas(Index='human', k__Archaea=(3592.2311111111112, 23218.420775896615), k__Bacteria=(915895.54000000015, 185019.88720458181), k__Eukaryota=(176.48222222222222, 721.77342560264219), k__Viruses=(80335.744444444441, 184666.2095717286))
+(3592.2311111111112, 23218.420775896615)
+(915895.54000000015, 185019.88720458181)
+(176.48222222222222, 721.77342560264219)
+(80335.744444444441, 184666.2095717286)
+[3592.231111111111, 23218.420775896615, 915895.5400000002, 185019.8872045818, 176.48222222222222, 721.7734256026422, 80335.74444444444, 184666.2095717286]
+3592.2 (23218.4) 	& 915895.5 (185019.9) 	& 176.5 (721.8) 	& 80335.7 (184666.2) 	\\
+Pandas(Index='rumen', k__Archaea=(1650.813333333333, 1717.4463480670624), k__Bacteria=(2838.3466666666664, 1186.3318635562684), k__Eukaryota=(0.49333333333333329, 1.8458843108084779), k__Viruses=(995510.36666666681, 2057.4561810373757))
+(1650.813333333333, 1717.4463480670624)
+(2838.3466666666664, 1186.3318635562684)
+(0.49333333333333329, 1.8458843108084779)
+(995510.36666666681, 2057.4561810373757)
+[1650.813333333333, 1717.4463480670624, 2838.3466666666664, 1186.3318635562684, 0.4933333333333333, 1.845884310808478, 995510.3666666668, 2057.4561810373757]
+1650.8 (1717.4) 	& 2838.3 (1186.3) 	& 0.5 (1.8) 	& 995510.4 (2057.5) 	\\
