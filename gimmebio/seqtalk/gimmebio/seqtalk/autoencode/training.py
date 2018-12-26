@@ -12,21 +12,23 @@ def build_feed_dict(model, epoch, batch):
     return feed_dict
 
 
-def train_autoencoder(model, sess, data_source, num_epochs=30, lr=1e-1):
+def train_autoencoder(model, sess, data_source, minibatch_size=50, num_epochs=30, lr=1e-1):
     training_losses, validation_losses = [], []
+    num_minibatches = len(data_source.train) // minibatch_size
     for epoch in range(num_epochs):
         epoch_loss = 0
-        for i in range(1100):
-            batch = data_source.train.next_batch(50)
+        data_source.train.reset()
+        for _ in range(num_minibatches):
+            batch = data_source.train.next_batch(minibatch_size)
             epoch_loss += sess.run(
                 [model.autoencoder_loss, model.ts_autoencoder],
                 feed_dict=build_feed_dict(model, epoch, batch)
             )[0]
-        training_losses.append(epoch_loss / 1100)
+        training_losses.append(epoch_loss / num_minibatches)
 
         # Run Validation
         loss = 0
-        for i in range(10):
+        for _ in range(10):
             batch = data_source.test.next_batch(500)
             loss += sess.run(
                 [model.loss_autoencoder],

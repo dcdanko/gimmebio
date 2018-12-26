@@ -1,105 +1,47 @@
-import tensorflow as tf, numpy as np, matplotlib.pyplot as plt, matplotlib.cm as cm
+import tensorflow as tf
+import numpy as np
+
 from tensorflow.python.framework import ops
-from mpl_toolkits.axes_grid1 import ImageGrid
 from tensorflow.examples.tutorials.mnist import input_data
-import bisect, math
-mnist = input_data.read_data_sets('MNIST_data', one_hot=True)
+import bisect
+import math
 
-def plot_nxn(n, images):
-    """Plots nxn MNIST images"""
-    images = images.reshape((n*n,28,28))
-    fig = plt.figure(1, (n, n))
-    grid = ImageGrid(fig, 111,  # similar to subplot(111)
-                     nrows_ncols=(n, n),  # creates grid of axes
-                     axes_pad=0.1,  # pad between axes in inch.
-                     share_all=True,
-                     )
-
-    grid.axes_llc.set_xticks([])
-    grid.axes_llc.set_yticks([])
-
-    for i in range(n*n):
-        grid[i].imshow(images[i], cmap = cm.Greys_r)  # The AxesGrid object work as a list of axes.
-
-    plt.show()
-
-def plot_2xn(n, images):
-    """Plots 2xn MNIST images"""
-    images = images.reshape((2*n,28,28))
-    fig = plt.figure(1, (n, 2))
-    grid = ImageGrid(fig, 111,  # similar to subplot(111)
-                     nrows_ncols=(2, n),  # creates grid of axes
-                     axes_pad=0.1,  # pad between axes in inch.
-                     share_all=True,
-                     )
-
-    grid.axes_llc.set_xticks([])
-    grid.axes_llc.set_yticks([])
-
-    for i in range(2*n):
-        grid[i].imshow(images[i], cmap = cm.Greys_r)  # The AxesGrid object work as a list of axes.
-
-    plt.show()
-
-def plot_mxn(m, n, images):
-    """Plots 2xn MNIST images"""
-    images = images.reshape((m*n,28,28))
-    fig = plt.figure(1, (n, m))
-    grid = ImageGrid(fig, 111,  # similar to subplot(111)
-                     nrows_ncols=(m, n),  # creates grid of axes
-                     axes_pad=0.1,  # pad between axes in inch.
-                     share_all=True,
-                     )
-
-    grid.axes_llc.set_xticks([])
-    grid.axes_llc.set_yticks([])
-
-    for i in range(m*n):
-        grid[i].imshow(images[i], cmap = cm.Greys_r)  # The AxesGrid object work as a list of axes.
-
-    plt.show()
-
-def plot_n(data_and_labels, lower_y = 0., title="Learning Curves"):
-    fig, ax = plt.subplots()
-    for data, label in data_and_labels:
-        ax.plot(range(0,len(data)*100,100),data, label=label)
-    ax.set_xlabel('Training steps')
-    ax.set_ylabel('Accuracy')
-    ax.set_ylim([lower_y,1])
-    ax.set_title(title)
-    ax.legend(loc=4)
-    plt.show()
 
 def reset_graph():
     if 'sess' in globals() and sess:
         sess.close()
     tf.reset_default_graph()
 
+
 def layer_linear(inputs, shape, scope='linear_layer'):
     with tf.variable_scope(scope):
-        w = tf.get_variable('w',shape)
-        b = tf.get_variable('b',shape[-1:])
-    return tf.matmul(inputs,w) + b
+        w = tf.get_variable('w', shape)
+        b = tf.get_variable('b', shape[-1:])
+    return tf.matmul(inputs, w) + b
+
 
 def layer_conv(inputs, filter_width, input_channels, output_channels, scope='conv_layer'):
     with tf.variable_scope(scope):
-        w = tf.get_variable('w',[filter_width, filter_width, input_channels, output_channels])
-        b = tf.get_variable('b',[output_channels])
+        w = tf.get_variable('w', [filter_width, filter_width, input_channels, output_channels])
+        b = tf.get_variable('b', [output_channels])
     return tf.nn.relu(tf.nn.conv2d(inputs, w, strides=[1, 1, 1, 1], padding='SAME')) + b
 
+
 def max_pool_2x2(x):
-  return tf.nn.max_pool(x, ksize=[1, 2, 2, 1],
-                        strides=[1, 2, 2, 1], padding='SAME')
+    return tf.nn.max_pool(x, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
+
 
 def layer_softmax(inputs, shape, scope='softmax_layer'):
     with tf.variable_scope(scope):
-        w = tf.get_variable('w',shape)
-        b = tf.get_variable('b',shape[-1:])
-    return tf.nn.softmax(tf.matmul(inputs,w) + b)
+        w = tf.get_variable('w', shape)
+        b = tf.get_variable('b', shape[-1:])
+    return tf.nn.softmax(tf.matmul(inputs, w) + b)
+
 
 def compute_accuracy(y, pred):
-    correct = tf.equal(tf.argmax(y,1), tf.argmax(pred,1))
+    correct = tf.equal(tf.argmax(y, 1), tf.argmax(pred, 1))
     return tf.reduce_mean(tf.cast(correct, tf.float32))
+
 
 def st_sampled_softmax(logits):
     """Takes logits and samples a one-hot vector according to them, using the straight
@@ -109,7 +51,8 @@ def st_sampled_softmax(logits):
         onehot_dims = logits.get_shape().as_list()[1]
         res = tf.one_hot(tf.squeeze(tf.multinomial(logits, 1), 1), onehot_dims, 1.0, 0.0)
         with tf.get_default_graph().gradient_override_map({'Ceil': 'Identity', 'Mul': 'STMul'}):
-            return tf.ceil(res*probs)
+            return tf.ceil(res * probs)
+
 
 def st_hardmax_softmax(logits):
     """Takes logits and creates a one-hot vector with a 1 in the position of the maximum
@@ -119,12 +62,14 @@ def st_hardmax_softmax(logits):
         onehot_dims = logits.get_shape().as_list()[1]
         res = tf.one_hot(tf.argmax(probs, 1), onehot_dims, 1.0, 0.0)
         with tf.get_default_graph().gradient_override_map({'Ceil': 'Identity', 'Mul': 'STMul'}):
-            return tf.ceil(res*probs)
+            return tf.ceil(res * probs)
+
 
 @ops.RegisterGradient("STMul")
 def st_mul(op, grad):
     """Straight-through replacement for Mul gradient (does not support broadcasting)."""
     return [grad, grad]
+
 
 def layer_hard_softmax(x, shape, onehot_dims, temperature_tensor=None, stochastic_tensor=None,
                        scope='hard_softmax_layer'):
@@ -151,16 +96,19 @@ def layer_hard_softmax(x, shape, onehot_dims, temperature_tensor=None, stochasti
         stochastic_tensor = tf.constant(True)
 
     with tf.variable_scope(scope):
-        w = tf.get_variable('w',shape)
-        b = tf.get_variable('b',shape[-1:])
+        w = tf.get_variable('w', shape)
+        b = tf.get_variable('b', shape[-1:])
     logits = tf.reshape((tf.matmul(x, w) + b) / temperature_tensor,
                         [-1, onehot_dims])
 
-    return tf.cond(stochastic_tensor,
-                lambda: tf.reshape(st_sampled_softmax(logits), [-1, shape[1]]),
-                lambda: tf.reshape(st_hardmax_softmax(logits), [-1, shape[1]]))
+    return tf.cond(
+        stochastic_tensor,
+        lambda: tf.reshape(st_sampled_softmax(logits), [-1, shape[1]]),
+        lambda: tf.reshape(st_hardmax_softmax(logits), [-1, shape[1]])
+    )
 
-def build_classifier(onehot_dims = 8, explicit_neurons = 80, real_neurons = 0):
+
+def build_classifier(onehot_dims=8, explicit_neurons=80, real_neurons=0):
     reset_graph()
 
     x = tf.placeholder(tf.float32, [None, 784], name='x_placeholder')
@@ -175,16 +123,16 @@ def build_classifier(onehot_dims = 8, explicit_neurons = 80, real_neurons = 0):
     conv1 = layer_conv(x_img, 5, 1, 16, scope="conv1")
     mp1 = max_pool_2x2(conv1)
 
-    mp1_flat = tf.reshape(mp1, [-1, 14*14*16])
+    mp1_flat = tf.reshape(mp1, [-1, 14 * 14 * 16])
 
-    real = tf.sigmoid(layer_linear(mp1_flat, [14*14*16, real_neurons], scope="real"))
-    explicit = layer_hard_softmax(mp1_flat, [14*14*16, onehot_dims * explicit_neurons],
+    real = tf.sigmoid(layer_linear(mp1_flat, [14 * 14 * 16, real_neurons], scope="real"))
+    explicit = layer_hard_softmax(mp1_flat, [14 * 14 * 16, onehot_dims * explicit_neurons],
                     onehot_dims, temperature_tensor, stochastic_tensor, scope="explicit")
 
     embedding = tf.reshape(explicit, [-1, explicit_neurons, onehot_dims])
 
-    emb0 = tf.slice(embedding, [0,0,1], [-1, -1, -1])
-    emb1 = tf.reshape(emb0, [-1, explicit_neurons * (onehot_dims-1)])
+    emb0 = tf.slice(embedding, [0, 0, 1], [-1, -1, -1])
+    emb1 = tf.reshape(emb0, [-1, explicit_neurons * (onehot_dims - 1)])
 
     if not real_neurons:
         emb2 = emb1
@@ -193,15 +141,15 @@ def build_classifier(onehot_dims = 8, explicit_neurons = 80, real_neurons = 0):
     else:
         emb2 = real
 
-    projection = tf.sigmoid(layer_linear(emb2, [(onehot_dims-1) * explicit_neurons + real_neurons, 784]))
+    projection = tf.sigmoid(layer_linear(emb2, [(onehot_dims - 1) * explicit_neurons + real_neurons, 784]))
 
-    preds = layer_softmax(tf.nn.dropout(emb2, dropout), [(onehot_dims-1) * explicit_neurons + real_neurons, 10])
+    preds = layer_softmax(tf.nn.dropout(emb2, dropout), [(onehot_dims - 1) * explicit_neurons + real_neurons, 10])
 
     loss_classification = tf.reduce_mean(-tf.reduce_sum(y * tf.log(preds), axis=1))
     loss_autoencoder = tf.reduce_mean(tf.reduce_sum(tf.square(projection - x), axis=1))
 
     ts_classification = tf.train.GradientDescentOptimizer(lr).minimize(loss_classification)
-    ts_autoencoder    = tf.train.GradientDescentOptimizer(lr).minimize(loss_autoencoder)
+    ts_autoencoder = tf.train.GradientDescentOptimizer(lr).minimize(loss_autoencoder)
 
     accuracy = compute_accuracy(y, preds)
 
@@ -223,6 +171,7 @@ def build_classifier(onehot_dims = 8, explicit_neurons = 80, real_neurons = 0):
         accuracy=accuracy,
         init_op=tf.global_variables_initializer()
     )
+
 
 # We are using this to make it so that the first dimension of each neuron is dead / silent
 def gen_zero_batch(n):

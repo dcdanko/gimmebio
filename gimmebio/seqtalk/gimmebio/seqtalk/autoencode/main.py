@@ -12,6 +12,9 @@ def main():
 
 
 @main.command('train')
+@click.option('--num-reads', default=10 * 1000 * 1000)
+@click.option('--minibatch-size', default=50)
+@click.option('--num-epochs', default=30)
 @click.argument('fastq_file')
 def train_new(fastq_file):
     model = build_explicit_autoencoder(Namespace(
