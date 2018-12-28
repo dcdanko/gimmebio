@@ -29,8 +29,13 @@ Packages
 Installation
 ------------
 
-Install from source.
 
+Install from PyPi.
+.. code-block:: bash
+
+    pip install gimmebio
+
+Install from source.
 .. code-block:: bash
 
     git clone git@github.com:dcdanko/gimmebio.git
