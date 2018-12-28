@@ -1,0 +1,23 @@
+	Command being timed: "/gfs/devel/ddanko/ac-diamond-0.1-beta-linux64/ac-diamond blastx -d /gfs/mirror/acdiamond/nr/nr-acdmnd -q fasta.dir/human_qin-CD-R4.fa.gz --threads 10 -a /gfs/scratch/temp.acdmndfast.dir/human_qin-CD-R4.acdmndfast --compress 0 --tmpdir /gfs/scratch"
+	User time (seconds): 31322.85
+	System time (seconds): 301.99
+	Percent of CPU this job got: 928%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 56:44.48
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 23116100
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 20520897
+	Voluntary context switches: 302904
+	Involuntary context switches: 3228179
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 0
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

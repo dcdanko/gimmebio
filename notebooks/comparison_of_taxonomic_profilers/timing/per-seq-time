@@ -1,0 +1,111 @@
+cowrumen-dna-R983262.fa.gz.dmnd.timing local variable 'U' referenced before assignment
+cowrumen-dna-R983263.fa.gz.dmnd.timing local variable 'U' referenced before assignment
+gpigfecal-dna-R495409.fa.gz.acdmnd.timing local variable 'U' referenced before assignment
+human-posterior_fornix-R015054.fa.gz.acdmnd.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human-posterior_fornix-R015054.fastq.gz'
+human-posterior_fornix-R015054.kraken.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human-posterior_fornix-R015054.fastq.gz'
+human-posterior_fornix-R015225.fa.gz.acdmnd.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human-posterior_fornix-R015225.fastq.gz'
+human-posterior_fornix-R015225.kraken.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human-posterior_fornix-R015225.fastq.gz'
+human-posterior_fornix-R016559.fa.gz.acdmnd.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human-posterior_fornix-R016559.fastq.gz'
+human-posterior_fornix-R016559.kraken.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human-posterior_fornix-R016559.fastq.gz'
+human-posterior_fornix-R017700.fa.gz.acdmnd.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human-posterior_fornix-R017700.fastq.gz'
+human-posterior_fornix-R017700.kraken.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human-posterior_fornix-R017700.fastq.gz'
+human-posterior_fornix-R023468.fa.gz.acdmnd.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human-posterior_fornix-R023468.fastq.gz'
+human-posterior_fornix-R023468.kraken.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human-posterior_fornix-R023468.fastq.gz'
+human-posterior_fornix-R023604.fa.gz.acdmnd.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human-posterior_fornix-R023604.fastq.gz'
+human-posterior_fornix-R023604.kraken.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human-posterior_fornix-R023604.fastq.gz'
+human-posterior_fornix-R056796.fa.gz.acdmnd.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human-posterior_fornix-R056796.fastq.gz'
+human-posterior_fornix-R056796.kraken.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human-posterior_fornix-R056796.fastq.gz'
+human_qin-CD-R1.fa.gz.acdmnd.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-CD-R1.fastq.gz'
+human_qin-CD-R1.fa.gz.acdmndfast.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-CD-R1.fastq.gz'
+human_qin-CD-R1.kraken.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-CD-R1.fastq.gz'
+human_qin-CD-R1.metaphlan2.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-CD-R1.fastq.gz'
+human_qin-CD-R14.fa.gz.acdmnd.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-CD-R14.fastq.gz'
+human_qin-CD-R14.fa.gz.acdmndfast.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-CD-R14.fastq.gz'
+human_qin-CD-R14.kraken.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-CD-R14.fastq.gz'
+human_qin-CD-R14.metaphlan2.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-CD-R14.fastq.gz'
+human_qin-CD-R15.fa.gz.acdmnd.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-CD-R15.fastq.gz'
+human_qin-CD-R15.fa.gz.acdmndfast.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-CD-R15.fastq.gz'
+human_qin-CD-R15.kraken.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-CD-R15.fastq.gz'
+human_qin-CD-R15.metaphlan2.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-CD-R15.fastq.gz'
+human_qin-CD-R4.fa.gz.acdmnd.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-CD-R4.fastq.gz'
+human_qin-CD-R4.fa.gz.acdmndfast.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-CD-R4.fastq.gz'
+human_qin-CD-R4.kraken.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-CD-R4.fastq.gz'
+human_qin-CD-R4.metaphlan2.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-CD-R4.fastq.gz'
+human_qin-CD-R8.fa.gz.acdmnd.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-CD-R8.fastq.gz'
+human_qin-CD-R8.fa.gz.acdmndfast.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-CD-R8.fastq.gz'
+human_qin-CD-R8.kraken.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-CD-R8.fastq.gz'
+human_qin-CD-R8.metaphlan2.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-CD-R8.fastq.gz'
+human_qin-CD-R9.fa.gz.acdmnd.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-CD-R9.fastq.gz'
+human_qin-CD-R9.fa.gz.acdmndfast.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-CD-R9.fastq.gz'
+human_qin-CD-R9.kraken.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-CD-R9.fastq.gz'
+human_qin-CD-R9.metaphlan2.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-CD-R9.fastq.gz'
+human_qin-HEALTHY-R01.fa.gz.acdmnd.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-HEALTHY-R01.fastq.gz'
+human_qin-HEALTHY-R01.fa.gz.acdmndfast.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-HEALTHY-R01.fastq.gz'
+human_qin-HEALTHY-R01.kraken.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-HEALTHY-R01.fastq.gz'
+human_qin-HEALTHY-R01.metaphlan2.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-HEALTHY-R01.fastq.gz'
+human_qin-HEALTHY-R03.fa.gz.acdmnd.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-HEALTHY-R03.fastq.gz'
+human_qin-HEALTHY-R03.fa.gz.acdmndfast.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-HEALTHY-R03.fastq.gz'
+human_qin-HEALTHY-R03.kraken.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-HEALTHY-R03.fastq.gz'
+human_qin-HEALTHY-R03.metaphlan2.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-HEALTHY-R03.fastq.gz'
+human_qin-HEALTHY-R04.fa.gz.acdmnd.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-HEALTHY-R04.fastq.gz'
+human_qin-HEALTHY-R04.fa.gz.acdmndfast.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-HEALTHY-R04.fastq.gz'
+human_qin-HEALTHY-R04.kraken.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-HEALTHY-R04.fastq.gz'
+human_qin-HEALTHY-R04.metaphlan2.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-HEALTHY-R04.fastq.gz'
+human_qin-HEALTHY-R06.fa.gz.acdmnd.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-HEALTHY-R06.fastq.gz'
+human_qin-HEALTHY-R06.fa.gz.acdmndfast.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-HEALTHY-R06.fastq.gz'
+human_qin-HEALTHY-R06.kraken.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-HEALTHY-R06.fastq.gz'
+human_qin-HEALTHY-R06.metaphlan2.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-HEALTHY-R06.fastq.gz'
+human_qin-HEALTHY-R16.fa.gz.acdmnd.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-HEALTHY-R16.fastq.gz'
+human_qin-HEALTHY-R16.fa.gz.acdmndfast.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-HEALTHY-R16.fastq.gz'
+human_qin-HEALTHY-R16.kraken.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-HEALTHY-R16.fastq.gz'
+human_qin-HEALTHY-R16.metaphlan2.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-HEALTHY-R16.fastq.gz'
+human_qin-HEALTHY-R20.fa.gz.acdmnd.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-HEALTHY-R20.fastq.gz'
+human_qin-HEALTHY-R20.fa.gz.acdmndfast.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-HEALTHY-R20.fastq.gz'
+human_qin-HEALTHY-R20.kraken.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-HEALTHY-R20.fastq.gz'
+human_qin-HEALTHY-R20.metaphlan2.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-HEALTHY-R20.fastq.gz'
+human_qin-UC-R1.fa.gz.acdmnd.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-UC-R1.fastq.gz'
+human_qin-UC-R1.fa.gz.acdmndfast.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-UC-R1.fastq.gz'
+human_qin-UC-R1.kraken.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-UC-R1.fastq.gz'
+human_qin-UC-R1.metaphlan2.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-UC-R1.fastq.gz'
+human_qin-UC-R11.fa.gz.acdmnd.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-UC-R11.fastq.gz'
+human_qin-UC-R11.fa.gz.acdmndfast.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-UC-R11.fastq.gz'
+human_qin-UC-R11.kraken.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-UC-R11.fastq.gz'
+human_qin-UC-R11.metaphlan2.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-UC-R11.fastq.gz'
+human_qin-UC-R14.fa.gz.acdmnd.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-UC-R14.fastq.gz'
+human_qin-UC-R14.fa.gz.acdmndfast.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-UC-R14.fastq.gz'
+human_qin-UC-R14.kraken.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-UC-R14.fastq.gz'
+human_qin-UC-R14.metaphlan2.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-UC-R14.fastq.gz'
+human_qin-UC-R18.fa.gz.acdmnd.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-UC-R18.fastq.gz'
+human_qin-UC-R18.fa.gz.acdmndfast.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-UC-R18.fastq.gz'
+human_qin-UC-R18.kraken.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-UC-R18.fastq.gz'
+human_qin-UC-R18.metaphlan2.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-UC-R18.fastq.gz'
+human_qin-UC-R20.fa.gz.acdmnd.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-UC-R20.fastq.gz'
+human_qin-UC-R20.fa.gz.acdmndfast.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-UC-R20.fastq.gz'
+human_qin-UC-R20.kraken.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-UC-R20.fastq.gz'
+human_qin-UC-R20.metaphlan2.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-UC-R20.fastq.gz'
+human_qin-UC-R23.fa.gz.acdmnd.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-UC-R23.fastq.gz'
+human_qin-UC-R23.fa.gz.acdmndfast.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-UC-R23.fastq.gz'
+human_qin-UC-R23.kraken.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-UC-R23.fastq.gz'
+human_qin-UC-R23.metaphlan2.timing [Errno 2] No such file or directory: '../line-counts/lines_in.human_qin-UC-R23.fastq.gz'
+rumen-rnahigh-R873459.fa.gz.acdmnd.timing local variable 'U' referenced before assignment
+rumen-rnahigh-R873460.fa.gz.acdmnd.timing local variable 'U' referenced before assignment
+rumen-rnahigh-R873461.fa.gz.acdmnd.timing local variable 'U' referenced before assignment
+rumen-rnahigh-R873462.fa.gz.acdmnd.timing local variable 'U' referenced before assignment
+rumen-rnahigh-R873463.fa.gz.acdmnd.timing local variable 'U' referenced before assignment
+rumen-rnahigh-R873464.fa.gz.acdmnd.timing local variable 'U' referenced before assignment
+rumen-rnahigh-R873465.fa.gz.acdmnd.timing local variable 'U' referenced before assignment
+rumen-rnalow-R873450.fa.gz.acdmnd.timing local variable 'U' referenced before assignment
+rumen-rnalow-R873451.fa.gz.acdmnd.timing local variable 'U' referenced before assignment
+rumen-rnalow-R873452.fa.gz.acdmnd.timing local variable 'U' referenced before assignment
+rumen-rnalow-R873453.fa.gz.acdmnd.timing local variable 'U' referenced before assignment
+rumen-rnalow-R873454.fa.gz.acdmnd.timing local variable 'U' referenced before assignment
+rumen-rnalow-R873455.fa.gz.acdmnd.timing local variable 'U' referenced before assignment
+rumen-rnalow-R873456.fa.gz.acdmnd.timing local variable 'U' referenced before assignment
+rumen-rnalow-R873457.fa.gz.acdmnd.timing local variable 'U' referenced before assignment
+bt2_vsen : (0.12424253277929184, 0.16314902338986892, 20)
+acdmnd : (107640.29973718058, 198726.84932844751, 59)
+bt2_fast : (0.0055127351170272346, 0.0052860438608068909, 14)
+kraken : (1234.0209313824355, 1512.1215833093931, 84)
+metaphlan2 : (132.3060160271921, 76.673462045140951, 84)
+dmndfast : (43212.206052121684, 29071.060075196317, 24)
+acdmndfast : (16100.015204308613, 18725.426203651929, 76)
