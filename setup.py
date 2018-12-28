@@ -1,21 +1,20 @@
-"""Macro module for MetaSUB Utilites.
+"""Macro module for Gimmebio.
 Based on: https://blog.shazam.com/python-microlibs-5be9461ad979
 """
 
 
 import os
-import pip
 from six import iteritems
 from setuptools import setup
 from setuptools.command.develop import develop
 from setuptools.command.install import install
-
+from subprocess import check_call
 
 PACKAGE_NAME = 'gimmebio'
 
 
 SOURCES = {
-    'gimmebio.seqs': 'gimembio/seqs',
+    'gimmebio.seqs': 'gimmebio/seqs',
     'gimmebio.kmers': 'gimmebio/kmers',
     'gimmebio.linked_reads': 'gimmebio/linked_reads',
 }
@@ -30,9 +29,9 @@ def install_microlibs(sources, develop=False):
         try:
             os.chdir(os.path.join(working_dir, path))
             if develop:
-                pip.main(['install', '-e', '.'])
+                check_call(["python", '-m', 'pip', 'install', '-e', '.'])
             else:
-                pip.main(['install', '.'])
+                check_call(["python", '-m', 'pip', 'install', '.'])
         except Exception as e:
             print('Something went wrong installing', name)
             print(e)
@@ -56,7 +55,7 @@ class InstallCmd(install):
 
 setup(
     name=PACKAGE_NAME,
-    version='0.2.1',
+    version='0.3.0',
     author='David Danko',
     author_email='dcdanko@gmail.com',
     description='Utilities and explorations in computational biology',
