@@ -20,6 +20,7 @@ Installation
 Install from source.
 
 .. code-block:: bash
+
     git clone git@github.com:dcdanko/gimmebio.git
     cd gimmebio
     python setup.py install
