@@ -70,7 +70,7 @@ jobs:
       MODULE_NAME: linked_reads
 
   # ----- RAM SEQ -----
-  test_ram_Seq:
+  test_ram_seq:
     <<: *default_test
     environment:
       MODULE_NAME: ram_seq
