@@ -10,12 +10,13 @@ VERBOSE = True
 
 @click.group()
 def main(args=None):
-    """Console script for metasub_utils."""
+    """Console script for gimmebio."""
     pass
 
 
 sub_clis = [
     ('gimmebio.kmers.cli', 'kmers'),
+    ('gimmebio.seqs.cli', 'seqs'),
 ]
 
 
