@@ -13,7 +13,7 @@ class TestRamSeq(TestCase):
         """Test that we get the correct values for ram sum of fibbonacci."""
         fibs = np.array([1, 1, 2, 3, 5, 8, 13, 21, 34, 55])
         RS = rs_matrix(len(fibs))
-        observed = np.dot(RS, fibs).T.tolist()[0]
+        observed = np.dot(RS, fibs).tolist()[0]
         expected = [14.3, 3.3, -0.55, -4.0, 3.925, -5.85, -0.86666667, 1.8, 2.9, 5.425]
         self.assertEqual(len(observed), len(expected))
         for i in range(len(observed)):
