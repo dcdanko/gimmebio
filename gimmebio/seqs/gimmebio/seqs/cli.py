@@ -2,14 +2,46 @@
 
 import click
 
-from sys import stderr
+from sys import stderr, stdout
 from os.path import basename
+
+from .sample_management import get_sample_name_and_end
 
 
 @click.group()
 def seqs():
     """Utilities for kmers."""
     pass
+
+
+@seqs.command('highlight')
+@click.argument('sequence_file', type=click.File('r'))
+def highlight_DNA(sequence_file):
+    """Highlight bases in a DNA sequence."""
+    COLS, ENDC = {'A': '\033[31m', 'T': '\033[33m', 'C': '\033[32m', 'G': '\033[34m'}, '\033[0m'
+    for line in sequence_file:
+        for base in line:
+            try:
+                col = COLS[base.upper()]
+                stdout.write(col + base + ENDC)
+            except KeyError:
+                stdout.write(base)
+
+
+@seqs.command('get-sample-names')
+@click.option('-r/-n', '--read-number/--no-read-number', default=False)
+@click.option('-f/-s', '--keep-filename/--no-keep-filename', default=False)
+@click.argument('fastq_filenames_file', type=click.File('r'))
+def get_sample_names(read_number, keep_filename, fastq_filenames_file):
+    """Print the sample name of samples in file."""
+    for fastq_filename in fastq_filenames_file:
+        sample_name, end = get_sample_name_and_end(fastq_filename)
+        out_str = sample_name
+        if read_number:
+            out_str += f'\t{end}'
+        if keep_filename:
+            out_str += f'\t{fastq_filename}'
+        print(out_str)
 
 
 @seqs.command('iter-paired-end')
@@ -20,19 +52,14 @@ def iter_paired_end_filenames(sample_names, filenames):
 
     Print unpaired files to stderr.
     """
-    def get_sample_name_and_end(filename):
-        """Return a tuple of sample name and read end."""
-        base = basename(filename)
-        for pattern, end in [('.R1.', 1), ('_1.', 1), ('.R2.', 2), ('_2.', 2)]:
-            if pattern in base:
-                return base.split(pattern)[0], end
-        assert False  # pattern unknown
-
     tbl = {}
     for filename in filenames:
         filename = filename.strip()
         try:
             sample_name, end = get_sample_name_and_end(filename)
+            if not end:
+                print(f'[SINGLE ENDED]\t{filename}', file=stderr)
+                continue
             try:
                 tbl[sample_name][end - 1] = filename
             except KeyError:
