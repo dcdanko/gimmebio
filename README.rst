@@ -4,6 +4,8 @@ gimmebio
 .. image:: https://circleci.com/gh/dcdanko/gimmebio.svg?style=svg
     :target: https://circleci.com/gh/dcdanko/gimmebio
 
+.. image:: https://www.codefactor.io/Content/badges/A.svg
+    :target: https://www.codefactor.io/repository/github/dcdanko/gimmebio
 
 Utilities and explorations in computational Biology. MIT License.
 
