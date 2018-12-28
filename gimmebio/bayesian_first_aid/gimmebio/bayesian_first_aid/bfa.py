@@ -26,8 +26,7 @@ def mad0(X):
     mad = float(total) / len(X)
     if mad == 0:
         return sd(X)
-    else:
-        return mad
+    return mad
 
 
 def bayesPairedTTest(X, Y):
@@ -105,8 +104,7 @@ def binarySearchInd(val, l, lowI, topI):
         if i == lowI:
             i += 1
         return binarySearchInd(val, l, i, topI)
-    else:
-        print('PANIC')
+    print('PANIC')
 
 
 def sampleHDI(sample, comp=0, credMass=0.95, equalRange=0.1):
