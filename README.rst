@@ -1,6 +1,9 @@
 gimmebio
 ========
 
+.. image:: https://img.shields.io/pypi/v/gimmebio.svg
+        :target: https://pypi.python.org/pypi/gimmebio
+
 .. image:: https://circleci.com/gh/dcdanko/gimmebio.svg?style=svg
     :target: https://circleci.com/gh/dcdanko/gimmebio
 
