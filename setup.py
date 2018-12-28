@@ -55,7 +55,7 @@ class InstallCmd(install):
 
 setup(
     name=PACKAGE_NAME,
-    version='0.2.1',
+    version='0.3.0',
     author='David Danko',
     author_email='dcdanko@gmail.com',
     description='Utilities and explorations in computational biology',
