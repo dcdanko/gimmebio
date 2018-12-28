@@ -11,7 +11,7 @@ class TestKmers(TestCase):
     def test_make_kmers(self):
         """Test that make kmers works."""
         seq = 'ATCGGTA'
-        expected_kmers = set(['ATCG', 'TCGA', 'CGGT', 'GGTA'])
+        expected_kmers = set(['ATCG', 'TCGG', 'CGGT', 'GGTA'])
         actual_kmers = make_kmers(seq, 4, canon=False)
         for kmer in actual_kmers:
             self.assertIn(kmer, expected_kmers)
