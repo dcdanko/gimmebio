@@ -56,10 +56,10 @@ class InstallCmd(install):
 
 setup(
     name=PACKAGE_NAME,
-    version='0.2.0',
+    version='0.2.1',
     author='David Danko',
     author_email='dcdanko@gmail.com',
-    description='Utility functions for the MetaSUB Consortium',
+    description='Utilities and explorations in computational biology',
     license='MIT License',
     classifiers=[
         'License :: OSI Approved :: MIT License',
