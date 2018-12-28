@@ -69,6 +69,12 @@ jobs:
     environment:
       MODULE_NAME: linked_reads
 
+  # ----- RAM SEQ -----
+  test_ram_seq:
+    <<: *default_test
+    environment:
+      MODULE_NAME: ram_seq
+
 
 test_tpl: &test_tpl
   filters:
@@ -88,4 +94,5 @@ workflows:
           <<: *test_tpl
       - test_linked_reads:
           <<: *test_tpl
-
+      - test_ram_seq:
+          <<: *test_tpl
