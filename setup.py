@@ -1,49 +1,84 @@
-import setuptools
-
-requirements = [
-    'Click>=6.0',
-    # TODO: put package requirements here
-]
+"""Macro module for MetaSUB Utilites.
+Based on: https://blog.shazam.com/python-microlibs-5be9461ad979
+"""
 
 
-setuptools.setup(
-    name="gimmebio",
-    version="0.1.0",
-    url="https://github.com/dcdanko/gimmebio.git",
+import os
+import pip
+from six import iteritems
+from setuptools import setup
+from setuptools.command.develop import develop
+from setuptools.command.install import install
 
-    author="David C. Danko",
-    author_email="dcdanko@gmail.com",
 
-    description="Common functions for comp. bio",
-    long_description=open('README.rst').read(),
+PACKAGE_NAME = 'gimmebio'
 
-    packages=setuptools.find_packages(),
 
-    ext_modules = [setuptools.Extension("cseqs", ["cext_gimmebio/_cseqs.c","cext_gimmebio/cseqs.c"])],
+SOURCES = {
+    'gimmebio.seqs': 'gimembio/seqs',
+    'gimmebio.kmers': 'gimmebio/kmers',
+    'gimmebio.linked_reads': 'gimmebio/linked_reads',
+}
 
-    entry_points= {
-        'console_scripts': [
-            'gb_highlight_dna=gimmebio.highlight_dna:highlightDNA_CLI',
-            'gb_make_kmers=gimmebio.kmers:makeKmers_CLI',
-            'gb_make_minsparse_kmers=gimmebio.kmers:makeMinSparseKmers_CLI',            
-            'gb_make_alpha_diversity_table=gimmebio.metagenomics.intrasample_diversity:main',
-            'gb_process_mpa_files=gimmebio.metagenomics.clip_aggregate_mpa:main',
-            'gb_clean_mash_distances=gimmebio.metagenomics.clean_mash_distances:main',
-            'gb_aggregate_intersample_distances=gimmebio.metagenomics.aggregate_intersample_diversity:main',
-            'gb_aggregate_list=gimmebio.metagenomics.general_aggregate:main',
-            'gb_bc_stats=gimmebio.linked_reads.bc_stats:main',            
-            'gb_aggregate_abr_tables=gimmebio.metagenomics.abr_table:main',
-            'gb_species_tables=gimmebio.metagenomics.species_table:main'            
-            ]
-        },
-    
-    install_requires=requirements,
 
+def install_microlibs(sources, develop=False):
+    """ Use pip to install all microlibraries.  """
+    print('Installing all microlibs in {} mode'.format(
+              'development' if develop else 'normal'))
+    working_dir = os.getcwd()
+    for name, path in iteritems(sources):
+        try:
+            os.chdir(os.path.join(working_dir, path))
+            if develop:
+                pip.main(['install', '-e', '.'])
+            else:
+                pip.main(['install', '.'])
+        except Exception as e:
+            print('Something went wrong installing', name)
+            print(e)
+        finally:
+            os.chdir(working_dir)
+
+
+class DevelopCmd(develop):
+    """ Add custom steps for the develop command """
+    def run(self):
+        install_microlibs(SOURCES, develop=True)
+        develop.run(self)
+
+
+class InstallCmd(install):
+    """ Add custom steps for the install command """
+    def run(self):
+        install_microlibs(SOURCES, develop=False)
+        install.run(self)
+
+
+setup(
+    name=PACKAGE_NAME,
+    version='0.2.0',
+    author='David Danko',
+    author_email='dcdanko@gmail.com',
+    description='Utility functions for the MetaSUB Consortium',
+    license='MIT License',
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
-        'Programming Language :: Python',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
+        'License :: OSI Approved :: MIT License',
+        'Natural Language :: English',
+        'Programming Language :: Python :: 3.6',
     ],
+    install_requires=[
+        'future',
+        'six',
+    ],
+    entry_points={
+        'console_scripts': [
+            'gimmebio=gimmebio.cli:main'
+        ]
+    },
+    cmdclass={
+        'install': InstallCmd,
+        'develop': DevelopCmd,
+    },
+    packages=[PACKAGE_NAME],
+    package_dir={PACKAGE_NAME: 'gimmebio'},
 )

@@ -1,0 +1,91 @@
+version: 2
+
+
+default_test: &default_test
+  docker:
+    - image: circleci/python:3.6
+
+  # CircleCI does not allow expansion of the path so we'll have to `cd`
+  # into the correct submodule directory for each `run` step
+  working_directory: ~/project
+
+  steps:
+    - checkout
+
+    - restore_cache:
+        keys:
+          # CIRCLE_JOB is the best approximation of MODULE_NAME env var
+          - v1-dependencies-{{ .Environment.CIRCLE_JOB }}-
+          - v1-dependencies-
+
+    - run:
+        name: Install Python Dependencies
+        command: |
+          python3 -m venv venv
+          . venv/bin/activate
+          pip install -r requirements.txt
+          cd gimmebio/$MODULE_NAME
+          pip install -r requirements.txt
+    - save_cache:
+        paths:
+          - ./venv
+        # We cannot use the {{ checksum }} helper for each submodule.
+        # Instead caches are saved with {{ epoch }} to ensure they are
+        # updated for each save.
+        key: v1-dependencies-{{ .Environment.CIRCLE_JOB }}-{{ epoch }}
+
+    - run:
+        name: Run tests
+        command: |
+          set +e
+          . venv/bin/activate
+          python -m pytest --color=yes gimmebio/$MODULE_NAME -s
+          EXIT_CODE=$?
+          if [ $EXIT_CODE -eq 5 ] ; then
+            # https://docs.pytest.org/en/latest/usage.html#possible-exit-codes
+            echo "Squashing pytest's non-zero exit code for 'no tests run'."
+            exit 0
+          else
+            exit $EXIT_CODE
+          fi
+
+# CircleCI Jobs
+jobs:
+  # ----- SEQS -----
+  test_seqs:
+    <<: *default_test
+    environment:
+      MODULE_NAME: seqs
+
+  # ----- KMERS -----
+  test_kmers:
+    <<: *default_test
+    environment:
+      MODULE_NAME: kmers
+
+  # ----- LINKED READS -----
+  test_linked_reads:
+    <<: *default_test
+    environment:
+      MODULE_NAME: linked_reads
+
+
+test_tpl: &test_tpl
+  filters:
+    tags:
+      only: /^v.*/
+
+
+workflows:
+  version: 2
+
+  # Run parallel pipelines for each module, skipping if there are no changes
+  base_cd:
+    jobs:
+      - test_seqs:
+          <<: *test_tpl
+      - test_kmers:
+          <<: *test_tpl
+      - test_linked_reads:
+          <<: *test_tpl
+
