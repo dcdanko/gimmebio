@@ -15,7 +15,7 @@ PACKAGE_NAME = 'gimmebio'
 
 
 SOURCES = {
-    'gimmebio.seqs': 'gimembio/seqs',
+    'gimmebio.seqs': 'gimmebio/seqs',
     'gimmebio.kmers': 'gimmebio/kmers',
     'gimmebio.linked_reads': 'gimmebio/linked_reads',
 }
