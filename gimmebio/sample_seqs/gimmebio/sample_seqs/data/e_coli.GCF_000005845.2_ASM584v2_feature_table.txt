@@ -1,4 +1,4 @@
-# feature	class	assembly	assembly_unit	seq_type	chromosome	genomic_accession	start	end	strand	product_accession	non-redundant_refseq	related_accession	name	symbol	GeneID	locus_tag	feature_interval_length	product_length	attributes
+feature	class	assembly	assembly_unit	seq_type	chromosome	genomic_accession	start	end	strand	product_accession	non-redundant_refseq	related_accession	name	symbol	GeneID	locus_tag	feature_interval_length	product_length	attributes
 gene	protein_coding	GCF_000005845.2	Primary Assembly	chromosome		NC_000913.3	190	255	+					thrL	944742	b0001	66		
 CDS	with_protein	GCF_000005845.2	Primary Assembly	chromosome		NC_000913.3	190	255	+	NP_414542.1	WP_001386572.1		thr operon leader peptide	thrL	944742	b0001	66	21	
 gene	protein_coding	GCF_000005845.2	Primary Assembly	chromosome		NC_000913.3	337	2799	+					thrA	945803	b0002	2463		

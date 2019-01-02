@@ -1,6 +1,6 @@
 from setuptools import setup
 
-microlib_name = 'gimmebio.seqs'
+microlib_name = 'gimmebio.sample_seqs'
 
 requirements = [
 ]
