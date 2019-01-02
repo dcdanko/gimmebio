@@ -17,6 +17,8 @@ SOURCES = {
     'gimmebio.seqs': 'gimmebio/seqs',
     'gimmebio.kmers': 'gimmebio/kmers',
     'gimmebio.linked_reads': 'gimmebio/linked_reads',
+    'gimmebio.ram_seq': 'gimmebio/ram_seq',
+    'gimmebio.text_plots': 'gimmebio/text_plots',
 }
 
 
