@@ -1,4 +1,4 @@
-# feature	class	assembly	assembly_unit	seq_type	chromosome	genomic_accession	start	end	strand	product_accession	non-redundant_refseq	related_accession	name	symbol	GeneID	locus_tag	feature_interval_length	product_length	attributes
+feature	class	assembly	assembly_unit	seq_type	chromosome	genomic_accession	start	end	strand	product_accession	non-redundant_refseq	related_accession	name	symbol	GeneID	locus_tag	feature_interval_length	product_length	attributes
 gene	protein_coding	GCF_000008345.1	Primary Assembly	chromosome		NC_006085.1	245	1747	+						2931966	PPA_RS00005	1503		old_locus_tag=PPA0001
 CDS	with_protein	GCF_000008345.1	Primary Assembly	chromosome		NC_006085.1	245	1747	+	WP_002515747.1	WP_002515747.1		chromosomal replication initiator protein DnaA		2931966	PPA_RS00005	1503	500	
 gene	protein_coding	GCF_000008345.1	Primary Assembly	chromosome		NC_006085.1	2219	3379	+						2933053	PPA_RS00010	1161		old_locus_tag=PPA0002

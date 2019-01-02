@@ -81,6 +81,12 @@ jobs:
     environment:
       MODULE_NAME: text_plots
 
+  # ----- SAMPLE SEQS -----
+  test_sample_seqs:
+    <<: *default_test
+    environment:
+      MODULE_NAME: sample_seqs
+
 test_tpl: &test_tpl
   filters:
     tags:
@@ -102,4 +108,6 @@ workflows:
       - test_ram_seq:
           <<: *test_tpl
       - test_text_plots:
+          <<: *test_tpl
+      - test_sample_seqs:
           <<: *test_tpl
