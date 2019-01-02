@@ -3,6 +3,8 @@ from setuptools import setup
 microlib_name = 'gimmebio.sample_seqs'
 
 requirements = [
+    'pandas',
+    'biopython',
 ]
 
 setup(
