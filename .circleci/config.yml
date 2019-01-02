@@ -76,7 +76,7 @@ jobs:
       MODULE_NAME: ram_seq
 
   # ----- TEXT PLOTS -----
-  test_ram_seq:
+  test_text_plots:
     <<: *default_test
     environment:
       MODULE_NAME: text_plots
