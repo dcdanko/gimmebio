@@ -46,22 +46,22 @@ def text_scatter_plot(values, graph_width=80, graph_height=30):
             longestDimStr = len(dimStr)
         outs.append((dimStr, sval))
 
-    out_str += 'o == (0, {}]'.format(firstQ)
-    out_str += '* == ({}, {}]'.format(firstQ, secondQ)
-    out_str += 'O == ({}, {}]'.format(thirdQ, np.amax(graph))
+    out_str += 'o == (0, {}]\n'.format(firstQ)
+    out_str += '* == ({}, {}]\n'.format(firstQ, secondQ)
+    out_str += 'O == ({}, {}]\n'.format(thirdQ, np.amax(graph))
 
     haxis = ' ' * longestDimStr + '.' * (graph_width + 4)
-    out_str += haxis
+    out_str += haxis + '\n'
     for dimStr, disp in outs:
         dimStr += ' ' * (longestDimStr - len(dimStr))
-        out_str += '{}. {} .'.format(dimStr, disp)
-    out_str += haxis
+        out_str += '{}. {} .\n'.format(dimStr, disp)
+    out_str += haxis + '\n'
 
     sval = ' ' * longestDimStr
     maxS = '{}'.format(maxX)
     minS = '{}'.format(minX)
     sval += minS + ' ' * (graph_width + 4 - len(maxS) - len(minS))
     sval += maxS
-    out_str += sval
+    out_str += sval + '\n'
 
     return out_str

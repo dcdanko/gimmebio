@@ -10,16 +10,16 @@ def text_histogram(values, logy=False, max_pos=None, bin_width=1, graph_width=70
         binned[el // bin_width] = 1 + binned.get(el // bin_width, 0)
 
     if max_pos is not None:
-        out_str += '# Clipping X-Axis at {:,}'.format(max_pos)
+        out_str += '# Clipping X-Axis at {:,}\n'.format(max_pos)
         binned = {k: v for k, v in binned.items() if (k * bin_width) <= max_pos}
     if logy:
         binned = {k: log(v) for k, v in binned.items()}
 
     minBin, maxBin = int(min(binned.keys())), int(max(binned.keys()) + 0.5)
-    maxVal, mult = max(binned.values())
+    maxVal = max(binned.values())
     mult = graph_width / maxVal
 
-    out_str += 'Max: {}'.format(maxVal)
+    out_str += 'Max: {}\n'.format(maxVal)
     maxHeader, bin_values = 0, []
     for i in range(minBin, maxBin + 1):
         val = binned.get(i, 0)
@@ -35,5 +35,5 @@ def text_histogram(values, logy=False, max_pos=None, bin_width=1, graph_width=70
 
     for header, sval in bin_values:
         spacer = ' ' * (maxHeader - len(header))
-        out_str += '{}{} : {}'.format(header, spacer, sval)
+        out_str += '{}{} : {}\n'.format(header, spacer, sval)
     return out_str
