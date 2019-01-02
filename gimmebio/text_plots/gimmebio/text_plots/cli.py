@@ -6,11 +6,11 @@ from .scatter_plot import text_scatter_plot
 
 
 @click.group()
-def main():
+def plots():
     pass
 
 
-@main.command('histo')
+@plots.command('histo')
 @click.option('--logy/--normaly', default=False)
 @click.option('--max-pos', type=float, default=None)
 @click.option('--bin-width', type=float, default=1)
@@ -29,10 +29,10 @@ def cli_text_histogram(logy, max_pos, bin_width, graph_width, input_file):
     ))
 
 
-@main.command('scatter')
+@plots.command('scatter')
 @click.option('-s', '--sep', default=' ')
-@click.option('-w', '--graph-width', type=float, default=70)
-@click.option('-h', '--graph-height', type=float, default=30)
+@click.option('-w', '--graph-width', type=int, default=70)
+@click.option('-h', '--graph-height', type=int, default=30)
 @click.argument('input_file', type=click.File('r'))
 def cli_text_scatter_plot(sep, graph_width, graph_height, input_file):
     """Print a text scatter plot to stdout."""
@@ -50,4 +50,4 @@ def cli_text_scatter_plot(sep, graph_width, graph_height, input_file):
 
 
 if __name__ == '__main__':
-    main()
+    plots()
