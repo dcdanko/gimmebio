@@ -6,7 +6,10 @@ from sys import stderr, stdout
 from os.path import basename
 
 from .sample_management import get_sample_name_and_end
-
+from .concat_lanes import (
+    group_filenames_by_name_read_lane,
+    concatenate_grouped_filenames,
+)
 
 @click.group()
 def seqs():
@@ -76,6 +79,16 @@ def iter_paired_end_filenames(sample_names, filenames):
         if sample_names:
             out_str = f'{sample_name}\t{out_str}'
         print(out_str)
+
+
+@seqs.command('concat-lanes')
+@click.option('-d/-w', '--dryrun/--wetrun', default=True)
+@click.argument('dest_dir')
+@click.argument('filenames', nargs=-1)
+def cli_concat_lanes(dryrun, dest_dir, filenames):
+    """Concatenate filenames (or at least write commands to stdout)."""
+    grouped = group_filenames_by_name_read_lane(filenames)
+    concatenate_grouped_filenames(grouped, dryrun=dryrun, dest_dir=dest_dir)
 
 
 if __name__ == '__main__':
