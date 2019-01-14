@@ -97,7 +97,7 @@ def cli_concat_lanes(dryrun, dest_dir, filenames):
 @click.argument('file_2_out', type=click.File('w'))
 def cli_uninterleave_fastq(file_in, file_1_out, file_2_out):
     """Uninterleave a fastq file."""
-    for i, line in file_in:
+    for i, line in enumerate(file_in):
         i %= 8
         if i < 4:
             file_1_out.write(line)
