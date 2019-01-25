@@ -38,7 +38,7 @@ def group_filenames_by_sep(filenames, sep):
     tups = {}
     for fname in filenames:
         sample_name = basename(fname).split(sep)[0]
-        key = (sample_name. getRead(fname))
+        key = (sample_name, getRead(fname))
         tups[key] = tups.get(key, {})
         tups[key][getLane(fname)] = fname
     return tups
@@ -50,7 +50,7 @@ def concatenate_grouped_filenames(grouped, cmd_file=stdout, dryrun=True, dest_di
         keys = sorted(val.keys())
         filenames = [val[key] for key in keys]
         out = f'{dest_dir}/{sname}_R{read}.fq.gz'
-        cmd = f'zcat {' '.join(filenames)} | gzip > {out}'
+        cmd = f'zcat {" ".join(filenames)} | gzip > {out}'
         print(cmd, file=cmd_file)
         if not dryrun:
             sp.call(cmd, shell=True)
