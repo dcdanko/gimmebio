@@ -14,7 +14,7 @@ PACKAGE_NAME = 'gimmebio'
 
 
 SOURCES = {
-    'gimmebio.seqs': 'gimmebio/seqs',
+    'gimmebio.seqs==0.5.1': 'gimmebio/seqs',
     'gimmebio.sample_seqs': 'gimmebio/sample_seqs',
     'gimmebio.kmers': 'gimmebio/kmers',
     'gimmebio.linked_reads': 'gimmebio/linked_reads',
@@ -58,7 +58,7 @@ class InstallCmd(install):
 
 setup(
     name=PACKAGE_NAME,
-    version='0.5.2',
+    version='0.5.3',
     author='David Danko',
     author_email='dcdanko@gmail.com',
     description='Utilities and explorations in computational biology',

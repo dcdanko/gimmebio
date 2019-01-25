@@ -1,6 +1,7 @@
 
 import subprocess as sp
 from sys import stdout
+from os.path import basename
 
 
 def getSname(fname):
@@ -30,13 +31,26 @@ def group_filenames_by_name_read_lane(filenames):
     return tups
 
 
+def group_filenames_by_sep(filenames, sep):
+    """Return a dict of dicts where outer keys are (sample_name, read)
+    and inner keys are lane numbers. Values are filenames.
+    """
+    tups = {}
+    for fname in filenames:
+        sample_name = basename(fname).split(sep)[0]
+        key = (sample_name. getRead(fname))
+        tups[key] = tups.get(key, {})
+        tups[key][getLane(fname)] = fname
+    return tups
+
+
 def concatenate_grouped_filenames(grouped, cmd_file=stdout, dryrun=True, dest_dir='.'):
     """Print concat commands to cmd_file. Call the commands if dryrun is False."""
     for (sname, read), val in grouped.items():
         keys = sorted(val.keys())
         filenames = [val[key] for key in keys]
         out = f'{dest_dir}/{sname}_R{read}.fq.gz'
-        cmd = f'zcat {filenames} | gzip > {out}'
+        cmd = f'zcat {' '.join(filenames)} | gzip > {out}'
         print(cmd, file=cmd_file)
         if not dryrun:
             sp.call(cmd, shell=True)

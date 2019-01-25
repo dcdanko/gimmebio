@@ -7,6 +7,7 @@ from os.path import basename
 
 from .sample_management import get_sample_name_and_end
 from .concat_lanes import (
+    group_filenames_by_sep,
     group_filenames_by_name_read_lane,
     concatenate_grouped_filenames,
 )
@@ -83,11 +84,15 @@ def iter_paired_end_filenames(sample_names, filenames):
 
 @seqs.command('concat-lanes')
 @click.option('-d/-w', '--dryrun/--wetrun', default=True)
+@click.option('-s', '--sep', default=None, type=str, help='Assume sample names occur before sep.')
 @click.argument('dest_dir')
 @click.argument('filenames', nargs=-1)
-def cli_concat_lanes(dryrun, dest_dir, filenames):
+def cli_concat_lanes(dryrun, sep, dest_dir, filenames):
     """Concatenate filenames (or at least write commands to stdout)."""
-    grouped = group_filenames_by_name_read_lane(filenames)
+    if sep:
+        grouped = group_filenames_by_sep(filenames, sep)
+    else:
+        grouped = group_filenames_by_name_read_lane(filenames)
     concatenate_grouped_filenames(grouped, dryrun=dryrun, dest_dir=dest_dir)
 
 
