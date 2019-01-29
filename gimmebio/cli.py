@@ -17,7 +17,8 @@ def main(args=None):
 sub_clis = [
     ('gimmebio.kmers.cli', 'kmers'),
     ('gimmebio.seqs.cli', 'seqs'),
-    ('gimmebio.text_plots.cli', 'plots')
+    ('gimmebio.text_plots.cli', 'plots'),
+    ('gimmebio.linked_reads.cli', 'lr'),
 ]
 
 
