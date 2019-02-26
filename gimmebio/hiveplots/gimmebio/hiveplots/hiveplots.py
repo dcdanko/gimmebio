@@ -5,6 +5,7 @@ from .geometry import (
     RadialPointSet,
     Hull,
 )
+from matplotlib import pyplot as plt
 
 
 class Axis:
@@ -121,3 +122,10 @@ class RatioHivePlot:
         for axis, angle in zip(self.axes, self._getAngles()):
             pts = RadialPointSet(RadialPoint(0, 0), axis.getTip(angle, names))
             pts.draw(color='black')
+
+    @classmethod
+    def from_df(cls, df):
+        hive_plot = cls()
+        for _, row in df.iterrows():
+            hive_plot.addAxis(row)
+        return hive_plot

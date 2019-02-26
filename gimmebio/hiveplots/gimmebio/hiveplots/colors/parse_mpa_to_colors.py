@@ -1,5 +1,5 @@
 from .color_tree import MasterColorTree
-from math import log
+
 
 def parse_mpa_to_coltree(mpa_file, colTree=None):
     if colTree is None:
