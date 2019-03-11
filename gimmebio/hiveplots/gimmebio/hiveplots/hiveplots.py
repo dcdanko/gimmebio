@@ -111,6 +111,8 @@ class RatioHivePlot:
             names = self._getNameOrder()
         hulls = self.getHulls(names)
         fig, ax = plt.subplots()
+        ax.set_aspect('equal')
+        plt.axis('off')
         for i, hull in enumerate(hulls):
             try:
                 col = colormap[hull.label]
