@@ -173,7 +173,6 @@ class Hull:
         co0 = self.co0.scale(self.alpha)
         co1 = self.co1.scale(self.alpha)
         vals = [co0.xys()[0], co1.xys()[0], co1.xys()[1], co0.xys()[1]]
-        print(vals)
         mat = np.array(vals)
         pc = PatchCollection(
             [Polygon(mat)], facecolor=color, edgecolor=color, alpha=1
