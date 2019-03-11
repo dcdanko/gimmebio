@@ -79,10 +79,10 @@ class RadialPointSet:
         return [pt.cartesian().y for pt in self.pts]
 
     def xys(self):
-        return [(x, y) for x, y in zip(self.xs(), self.ys())]
+        return [[x, y] for x, y in zip(self.xs(), self.ys())]
 
-    def draw(self, color=None):
-        plt.plot(self.xs(), self.ys(), color=color)
+    def draw(self, color=None, **kwargs):
+        plt.plot(self.xs(), self.ys(), color=color, **kwargs)
 
     def translateCartesian(self, x, y):
         pts = [pt.translateCartesian(x, y) for pt in self.pts]
@@ -131,20 +131,21 @@ class ArchimedianCurve:
             alpha += alphaInc
         return RadialPointSet(*pts)
 
-    def draw(self, color=None):
+    def draw(self, color=None, **kwargs):
         resolution = 100  # Just a guess
         pts = self.interp(N=resolution)
-        plt.plot(pts.xs(), pts.ys(), color=color)
+        plt.plot(pts.xs(), pts.ys(), color=color, **kwargs)
 
 
 class Hull:
 
-    def __init__(self, rpt0, rpt1, rpt2, rpt3, label=None):
+    def __init__(self, rpt0, rpt1, rpt2, rpt3, label=None, straight=False):
         self.co0 = Colinear(rpt0, rpt1)
         self.co1 = Colinear(rpt2, rpt3)
         self.origin = CartesianPoint(0, 0)
         self.alpha = 1
         self.label = label
+        self.straight = straight
 
     def translateCartesian(self, x, y):
         out = Hull(self.co0.pts[0], self.co0.pts[1],
@@ -160,22 +161,37 @@ class Hull:
         out.origin = self.origin
         return out
 
-    def draw(self, color=None, ax=None):
+    def draw(self, color=None, ax=None, **kwargs):
+        if self.straight:
+            return self.draw_straight(color=color, ax=ax, **kwargs)
+        else:
+            return self.draw_curved(color=color, ax=ax, **kwargs)
+
+    def draw_straight(self, color=None, ax=None, **kwargs):
         if ax is None:
             _, ax = plt.subplots()
         co0 = self.co0.scale(self.alpha)
-        #co0 = co0.translateCartesian(self.origin.x, self.origin.y)
         co1 = self.co1.scale(self.alpha)
-        #co1 = co1.translateCartesian(self.origin.x, self.origin.y)
+        vals = [co0.xys()[0], co1.xys()[0], co1.xys()[1], co0.xys()[1]]
+        print(vals)
+        mat = np.array(vals)
+        pc = PatchCollection(
+            [Polygon(mat)], facecolor=color, edgecolor=color, alpha=1
+        )
+        ax.add_collection(pc)
+
+    def draw_curved(self, color=None, ax=None, **kwargs):
+        if ax is None:
+            _, ax = plt.subplots()
+        co0 = self.co0.scale(self.alpha)
+        co1 = self.co1.scale(self.alpha)
         ac0 = ArchimedianCurve(co0.pts[0], co1.pts[0])
         curve0 = ac0.interp().xys()
         ac1 = ArchimedianCurve(co0.pts[1], co1.pts[1])
         curve1 = ac1.interp().xys()
-        mat = np.matrix(curve0 + curve1[::-1])
+        mat = np.array(curve0 + curve1[::-1])
         pc = PatchCollection([Polygon(mat)],
                              facecolor=color,
                              edgecolor=color,
                              alpha=1)
         ax.add_collection(pc)
-        #ac0.draw(color=color)
-        #ac1.draw(color=color)

@@ -58,8 +58,9 @@ class Axis:
 
 class RatioHivePlot:
 
-    def __init__(self):
+    def __init__(self, straight_sided=False):
         self.axes = []
+        self.straight = straight_sided
 
     def addAxis(self, vals):
         self.axes.append(Axis(vals))
@@ -82,7 +83,7 @@ class RatioHivePlot:
             coords1 = self.axes[j].getCoords(names, angles[j])
             out += [Hull(coords0[name][0], coords0[name][1],
                          coords1[name][0], coords1[name][1],
-                         label=name)
+                         label=name, straight=self.straight)
                     for name in names]
         return out
 
@@ -98,7 +99,7 @@ class RatioHivePlot:
         names = [name for name, val in revValNames]
         return names
 
-    def draw(self, names=None, colormap=None, box=1, pt=CartesianPoint(0, 0)):
+    def draw(self, names=None, colormap=None, box=1, pt=CartesianPoint(0, 0), **kwargs):
         '''
 
         Args:
@@ -115,13 +116,13 @@ class RatioHivePlot:
                 col = colormap[hull.label]
             except KeyError:
                 col = None
-            hull.draw(color=col, ax=ax)
+            hull.draw(color=col, ax=ax, **kwargs)
         self.drawAxes(names)
 
-    def drawAxes(self, names):
+    def drawAxes(self, names, **kwargs):
         for axis, angle in zip(self.axes, self._getAngles()):
             pts = RadialPointSet(RadialPoint(0, 0), axis.getTip(angle, names))
-            pts.draw(color='black')
+            pts.draw(color='black', **kwargs)
 
     @classmethod
     def from_df(cls, df):

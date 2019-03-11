@@ -9,7 +9,7 @@ requirements = [
 
 setup(
     name=microlib_name,
-    version='0.3.0',
+    version='0.4.0',
     author='David Danko',
     author_email='dcdanko@gmail.com',
     license='MIT license',
@@ -19,6 +19,6 @@ setup(
         'Programming Language :: Python :: 3.6',
     ],
     namespace_packages=['gimmebio'],
-    packages=[microlib_name],
+    packages=[microlib_name, f'{microlib_name}.colors'],
     install_requires=requirements,
 )
