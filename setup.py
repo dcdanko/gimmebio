@@ -20,7 +20,7 @@ SOURCES = {
     'gimmebio.linked_reads==0.3.0': 'gimmebio/linked_reads',
     'gimmebio.ram_seq': 'gimmebio/ram_seq',
     'gimmebio.text_plots': 'gimmebio/text_plots',
-    'gimmebio.hiveplots==0.4.2': 'gimmebio/hiveplots',
+    'gimmebio.hiveplots==0.4.3': 'gimmebio/hiveplots',
 }
 
 

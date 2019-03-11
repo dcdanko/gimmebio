@@ -81,10 +81,14 @@ class RatioHivePlot:
             j = (i + 1) % len(self.axes)
             coords0 = self.axes[i].getCoords(names, angles[i])
             coords1 = self.axes[j].getCoords(names, angles[j])
-            out += [Hull(coords0[name][0], coords0[name][1],
-                         coords1[name][0], coords1[name][1],
-                         label=name, straight=self.straight)
-                    for name in names]
+            out += [
+                Hull(
+                    coords0[name][0], coords0[name][1],
+                    coords1[name][0], coords1[name][1],
+                    label=name, straight=self.straight
+                )
+                for name in names if name in self.axes[i].names() and name in self.axes[j].names()
+            ]
         return out
 
     def _getNameOrder(self):
