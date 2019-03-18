@@ -6,7 +6,7 @@ from .geometry import (
     Hull,
 )
 from matplotlib import pyplot as plt
-
+from pylab import text
 
 class Axis:
     '''Represent one axis in a ratio hiveplot.
@@ -73,7 +73,7 @@ class RatioHivePlot:
             angles.append(startAngle + i * angleIncr)
         return angles
 
-    def getHulls(self, names):
+    def getHulls(self, names, thickaxes=False, **kwargs):
         out = []
         angles = self._getAngles()
 
@@ -81,14 +81,21 @@ class RatioHivePlot:
             j = (i + 1) % len(self.axes)
             coords0 = self.axes[i].getCoords(names, angles[i])
             coords1 = self.axes[j].getCoords(names, angles[j])
-            out += [
-                Hull(
-                    coords0[name][0], coords0[name][1],
-                    coords1[name][0], coords1[name][1],
-                    label=name, straight=self.straight
-                )
-                for name in names if name in self.axes[i].names() and name in self.axes[j].names()
-            ]
+            for name in names:
+                if name in self.axes[i].names() and name in self.axes[j].names():
+                    out.append(Hull(
+                        coords0[name][0], coords0[name][1],
+                        coords1[name][0], coords1[name][1],
+                        label=name, straight=self.straight
+                    ))
+                elif thickaxes and name in self.axes[i].names():
+                    delta = kwargs.get('delta', 0.04)
+                    out.append(Hull(
+                        coords0[name][0].translate(0, -delta), coords0[name][1].translate(0, -delta),
+                        coords0[name][0].translate(0, delta), coords0[name][1].translate(0, delta),
+                        label=name, straight=False
+                    ))
+
         return out
 
     def _getNameOrder(self):
@@ -103,7 +110,7 @@ class RatioHivePlot:
         names = [name for name, val in revValNames]
         return names
 
-    def draw(self, names=None, colormap=None, box=1, pt=CartesianPoint(0, 0), **kwargs):
+    def draw(self, names=None, colormap=None, box=1, thickaxes=False, **kwargs):
         '''
 
         Args:
@@ -111,12 +118,22 @@ class RatioHivePlot:
             pt, `geometry.CartesianPoint`, coords of the top
                 left corner of the bounding box
         '''
+        pt = kwargs.get('pt', CartesianPoint(0, 0))
         if names is None:
             names = self._getNameOrder()
-        hulls = self.getHulls(names)
+        hulls = self.getHulls(names, thickaxes=thickaxes, **kwargs)
         fig, ax = plt.subplots()
         ax.set_aspect('equal')
         plt.axis('off')
+        label = kwargs.get('label', None)
+        if label:
+            fontsize = kwargs.get('fontsize', 18)
+            text(
+                -1, 1, label,
+                fontsize=fontsize,
+                horizontalalignment='center',
+                verticalalignment='center',
+            )
         for i, hull in enumerate(hulls):
             try:
                 col = colormap[hull.label]

@@ -55,6 +55,15 @@ class TestHiveplots(TestCase):
         hp.draw(colormap=cols)
         plt.show()
 
+    def test_hive_with_label(self):
+        hp = RatioHivePlot()
+        hp.addAxis({'a': 0.5, 'b': 0.3, 'c': 0.1})
+        hp.addAxis({'a': 0.2, 'b': 0.4, 'c': 0.1})
+        hp.addAxis({'a': 0.6, 'b': 0.1, 'c': 0.3})
+        cols = {'a': 'r', 'b': 'g', 'c': 'b'}
+        hp.draw(colormap=cols, label='foo')
+        plt.show()
+
     def test_straight_hive(self):
         hp = RatioHivePlot(straight_sided=True)
         hp.addAxis({'a': 0.5, 'b': 0.3, 'c': 0.1})
@@ -62,6 +71,15 @@ class TestHiveplots(TestCase):
         hp.addAxis({'a': 0.6, 'b': 0.1, 'c': 0.3})
         cols = {'a': 'r', 'b': 'g', 'c': 'b'}
         hp.draw(colormap=cols)
+        plt.show()
+
+    def test_straight_hive_with_gap(self):
+        hp = RatioHivePlot(straight_sided=True)
+        hp.addAxis({'a': 0.5, 'b': 0.3})
+        hp.addAxis({'a': 0.2, 'b': 0.4, 'c': 0.1})
+        hp.addAxis({'a': 0.6, 'b': 0.1})
+        cols = {'a': 'r', 'b': 'g', 'c': 'b'}
+        hp.draw(colormap=cols, thickaxes=True)
         plt.show()
 
     def test_hive_with_colors(self):
