@@ -14,6 +14,7 @@ def get_sample_name_and_end(filename, sample_name_delims=None):
             return sample_name, end
     for pattern in ['.fq', '.fastq', '.fna', '.faa', '.fasta']:
         if pattern in base:
+            sample_name = base.split(pattern)[0]
             if sample_name_delims:
                 for delim in sample_name_delims:
                     sample_name = sample_name.split(delim)[0]
