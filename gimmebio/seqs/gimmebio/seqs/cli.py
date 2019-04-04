@@ -51,8 +51,9 @@ def get_sample_names(read_number, keep_filename, fastq_filenames_file):
 @seqs.command('iter-paired-end')
 @click.option('-d', '--sample-name-delims', default=None)
 @click.option('-s/-n', '--sample-names/--no-sample-names', default=False)
+@click.option('-p', '--patterns', nargs=2, default=None, help='Patterns for R1 and R2.')
 @click.argument('filenames', type=click.File('r'))
-def iter_paired_end_filenames(sample_name_delims, sample_names, filenames):
+def iter_paired_end_filenames(sample_name_delims, sample_names, patterns, filenames):
     """Print paired end files to stdout, one pair per line.
 
     Print unpaired files to stderr.
@@ -61,7 +62,7 @@ def iter_paired_end_filenames(sample_name_delims, sample_names, filenames):
     for filename in filenames:
         filename = filename.strip()
         try:
-            sample_name, end = get_sample_name_and_end(filename, sample_name_delims=sample_name_delims)
+            sample_name, end = get_sample_name_and_end(filename, patterns=patterns, sample_name_delims=sample_name_delims)
             if not end:
                 print(f'[SINGLE ENDED]\t{filename}', file=stderr)
                 continue
