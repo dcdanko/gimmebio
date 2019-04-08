@@ -2,7 +2,10 @@
 
 import click
 import sys
+from os.path import basename
+import pandas as pd
 
+from .kmer_stats import jf_stats
 from .kmers import make_kmers
 from .min_sparse_kmers import MinSparseKmerSet
 
@@ -37,6 +40,22 @@ def makeMinSparseKmers_CLI(kmer_len, window_len):
             else:
                 sys.stdout.write('\t{}'.format(kmer))
         sys.stdout.write('\n')
+
+
+@kmers.command('stats')
+@click.option('-d', '--delim', default=None, help='Delimiter for sample name in filename')
+@click.argument('out_file', type=click.File('w'))
+@click.argument('jellyfish_filenames', nargs=-1)
+def cli_jellyfish_stats(delim, out_file, jellyfish_filenames):
+    """Make a table of summary stats from jellyfish kmer counting files."""
+    tbl = {}
+    for jf_filename in jellyfish_filenames:
+        sample_name = basename(jf_filename)
+        if delim:
+            sample_name = sample_name.split(delim)[0]
+        tbl[sample_name] = jf_stats(jf_filename)
+    tbl = pd.DataFrame.from_dict(tbl, orient='index')
+    tbl.to_csv(out_file)
 
 
 if __name__ == '__main__':

@@ -1,8 +1,13 @@
 """Test suite for kmer."""
 
 from unittest import TestCase
+from os.path import dirname, join
+from shutil import which
 
-from gimmebio.kmers import make_kmers
+from gimmebio.kmers import make_kmers, jf_stats
+
+
+JF_FILE = join(dirname(__file__), 'test_kmer.jf')
 
 
 class TestKmers(TestCase):
@@ -23,3 +28,9 @@ class TestKmers(TestCase):
         actual_kmers = make_kmers(seq, 4, canon=True)
         for kmer in actual_kmers:
             self.assertIn(kmer, expected_kmers)
+
+    def test_kmer_stats(self):
+        if not which('jellyfish'):  # only run this test on systems where JF is installed
+            return
+        stats = jf_stats(JF_FILE)
+        print(stats)
