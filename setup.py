@@ -20,7 +20,7 @@ SOURCES = {
     'gimmebio.linked_reads==0.3.0': 'gimmebio/linked_reads',
     'gimmebio.ram_seq': 'gimmebio/ram_seq',
     'gimmebio.text_plots': 'gimmebio/text_plots',
-    'gimmebio.hiveplots==0.4.3': 'gimmebio/hiveplots',
+    'gimmebio.hiveplots==0.5.0': 'gimmebio/hiveplots',
 }
 
 
@@ -59,7 +59,7 @@ class InstallCmd(install):
 
 setup(
     name=PACKAGE_NAME,
-    version='0.11.0',
+    version='0.11.1',
     author='David Danko',
     author_email='dcdanko@gmail.com',
     description='Utilities and explorations in computational biology',
