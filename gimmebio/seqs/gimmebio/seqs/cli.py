@@ -5,6 +5,7 @@ import click
 from sys import stderr, stdout
 from os.path import basename
 
+from .fastx_io import iterFasta
 from .sample_management import get_sample_name_and_end
 from .concat_lanes import (
     group_filenames_by_sep,
@@ -110,6 +111,17 @@ def cli_uninterleave_fastq(file_in, file_1_out, file_2_out):
             file_1_out.write(line)
         else:
             file_2_out.write(line)
+
+
+@seqs.command('filter-contigs')
+@click.option('-l', '--min-len', default=1000, help='minimum contig length')
+@click.argument('file_in', type=click.File('r'))
+@click.argument('file_out', type=click.File('w'))
+def cli_filter_contigs(min_len, file_in, file_out):
+    """Filter contigs shorter than the given length."""
+    for rec in iterFasta(file_in):
+        if len(rec) >= min_len:
+            file_out.write(str(rec))
 
 
 if __name__ == '__main__':
