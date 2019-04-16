@@ -18,4 +18,4 @@ class TestAssembly(TestCase):
     def test_contig_assignment(self):
         with open(M8_FILE) as m8f:
             tbl = assign_contigs(m8f, genfile=GENBANK_ABBREV)
-        self.assertTrue(tbl.shape[0])
+        self.assertEqual(tbl.shape[0], 2)
