@@ -9,11 +9,13 @@ from os import environ
 
 
 def get_ncbi_id(gbid, gb_id_tbl):
+    gbid = gbid.split('.')[0]
     try:
         return gb_id_tbl[gbid]
     except KeyError:
         ncbi_id = None
         for sub_id in gbid.split('|'):
+            sub_id = sub_id.split('.')[0]
             ncbi_id = gb_id_tbl.get(sub_id, None)
     return ncbi_id
 
