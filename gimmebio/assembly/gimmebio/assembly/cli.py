@@ -30,7 +30,7 @@ def cli_id_contigs(sep, genbank_id_map, seq_fasta, m8file, outfile):
 @assembly.command('condense-ids')
 @click.option('-s', '--sep', default='\t')
 @click.option('-r', '--rank', default=None, help='Taxonomic rank for grouping')
-@click.argument('assignement_file', type=click.File('r'))
+@click.argument('assignment_file', type=click.File('r'))
 @click.argument('outfile', type=click.File('w'))
 def cli_condense_ids(sep, rank, assignment_file, outfile):
     """ID contigs based on the species that have the most homology to each."""
