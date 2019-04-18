@@ -3,8 +3,19 @@ import gzip
 import pandas as pd
 
 from gimmebio.constants import GIMMEBIO_HOME
+from Bio import SeqIO
 from os.path import isfile, join
 from os import environ
+
+
+def get_ncbi_id(gbid, gb_id_tbl):
+    try:
+        return gb_id_tbl[gbid]
+    except KeyError:
+        ncbi_id = None
+        for sub_id in gbid.split('|'):
+            ncbi_id = gb_id_tbl.get(sub_id, None)
+    return ncbi_id
 
 
 def get_genbank(genfile=None):
@@ -24,18 +35,17 @@ def get_genbank(genfile=None):
     return id_tbl
 
 
-def map_taxa_to_contigs(m8file, genfile=None, min_homology=95, min_len=1000):
+def map_taxa_to_contigs(m8file, min_homology=95, min_len=1000):
     """Reurn a nested dictionary mapping the high-homology length of each taxa for each contig."""
-    gb_id_tbl, contig_tbl = get_genbank(genfile=genfile), {}
+    contig_tbl = {}
     for tkns in (line.strip().split('\t') for line in m8file):
         contig_id, gbid, perc_id, length = tkns[:4]
-        if float(perc_id) < min_homology or int(length) < min_len:
+        length, perc_id = int(length), float(perc_id)
+        if perc_id < min_homology or length < min_len:
             continue
-        ncbi_id = gb_id_tbl.get(gbid, gbid)
-        try:
-            contig_tbl[contig_id][ncbi_id] += int(length)
-        except KeyError:
-            contig_tbl[contig_id] = {ncbi_id: int(length)}
+        my_contig_tbl = contig_tbl.get(contig_id, {})
+        my_contig_tbl[gbid] = length + my_contig_tbl.get(gbid, 0)
+        contig_tbl[contig_id] = my_contig_tbl
     return contig_tbl
 
 
@@ -51,15 +61,30 @@ def filter_contig_assignments(taxa, retain_fraction=2):
     return filtered
 
 
-def assign_contigs(m8file, genfile=None, min_homology=95, min_len=1000, retain_fraction=2):
+def assign_contigs(m8file, genfile=None, seqfile=None, min_homology=95, min_len=1000, retain_fraction=2):
     """Return a DatFrame with all filtered assignments for all contigs."""
-    contig_map = map_taxa_to_contigs(m8file, genfile=genfile, min_homology=min_homology, min_len=min_len)
+    gb_id_tbl = get_genbank(genfile=genfile)
+    contig_map = map_taxa_to_contigs(m8file, min_homology=min_homology, min_len=min_len)
     assigned = []
     for contig, taxa in contig_map.items():
         assignments = filter_contig_assignments(taxa, retain_fraction=retain_fraction)
         assigned += [
-            {'contig': contig, 'taxon': taxon, 'length': length}
-            for taxon, length in assignments
+            {
+                'contig': contig,
+                'original_id': gbid,
+                'taxon': get_ncbi_id(gbid, gb_id_tbl),
+                'length': length,
+            }
+            for gbid, length in assignments
         ]
     assigned = pd.DataFrame(assigned)
+    if seqfile:
+        seqlens = pd.Series({
+            rec.name: len(rec.seq)
+            for rec in SeqIO.parse(seqfile, 'fasta')
+        })
+        contig_lengths = list(seqlens[assigned['contig']])
+        assigned['contig_length'] = contig_lengths
+        assigned['contig_length_fraction'] = list(assigned['length'] / contig_lengths)
+
     return assigned

@@ -21,7 +21,7 @@ SOURCES = {
     'gimmebio.ram_seq': 'gimmebio/ram_seq',
     'gimmebio.text_plots': 'gimmebio/text_plots',
     'gimmebio.hiveplots==0.5.0': 'gimmebio/hiveplots',
-    'gimmebio.assembly==0.1.0': 'gimmebio/assembly',
+    'gimmebio.assembly==0.2.1': 'gimmebio/assembly',
 }
 
 
