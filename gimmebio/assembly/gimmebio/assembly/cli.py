@@ -8,7 +8,9 @@ from .assign_contigs import (
     assign_contigs,
     compress_assigned_contigs,
 )
-
+from .filter_process import (
+    filter_homologous,
+)
 
 @click.group()
 def assembly():
@@ -66,8 +68,8 @@ def cli_cat_fastas(delim, min_len, outfile, fasta_files):
 @click.option('-l', '--min-len-frac', default=0.8)
 @click.argument('outfile', type=click.File('w'))
 @click.argument('m8file', type=click.File('r'))
-@click.argument('fasta_files', type=click.File('r'), nargs=-1)
-def cli_filter_homologous(min_perc_id, min_len_frac, outfile, m8file, fasta_files):
+@click.argument('fasta_file', type=click.File('r'))
+def cli_filter_homologous(min_perc_id, min_len_frac, outfile, m8file, fasta_file):
     """Filter contigs that are homologous to one another keeping the largest.
 
     Find connected components in the m8 file (presumed to be an
@@ -75,9 +77,13 @@ def cli_filter_homologous(min_perc_id, min_len_frac, outfile, m8file, fasta_file
     an alignment is:
     1) Greater than <min_perc_id> similar
     2) Longer than <min_len_frac> * min(len(c1), len(c2))
-    For each component take the longest contig and write it to a fastan.
+    For each component take the longest contig and write it to a fasta.
     """
-    pass
+    SeqIO.write(
+        filter_homologous(m8file, fasta_file, min_perc_id=min_perc_id, min_len_frac=min_len_frac),
+        outfile,
+        'fasta'
+    )
 
 
 @assembly.command('rpkm-from-bam')
