@@ -4,11 +4,12 @@ microlib_name = 'gimmebio.assembly'
 
 requirements = [
     'pandas',
+    'capalyzer',
 ]
 
 setup(
     name=microlib_name,
-    version='0.2.2',
+    version='0.3.0',
     author='David Danko',
     author_email='dcdanko@gmail.com',
     license='MIT license',

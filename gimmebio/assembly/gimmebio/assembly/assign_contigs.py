@@ -1,6 +1,7 @@
 
 import gzip
 import pandas as pd
+from capalyzer.packet_parser import NCBITaxaTree
 
 from gimmebio.constants import GIMMEBIO_HOME
 from Bio import SeqIO
@@ -90,3 +91,34 @@ def assign_contigs(m8file, genfile=None, seqfile=None, min_homology=95, min_len=
         assigned['contig_length_fraction'] = list(assigned['length'] / contig_lengths)
 
     return assigned
+
+
+def compress_assigned_contigs(assigned, rank=None, min_cov=0.9, max_cov=1.0):
+    assigned = assigned.query(f'contig_length_fraction > {min_cov}')
+    assigned = assigned.query(f'contig_length_fraction <= {max_cov}')
+    if rank:  # slow so only do it if necessary
+        tree = NCBITaxaTree.parse_files()
+
+        def at_rank(taxon):
+            try:
+                return tree.ancestor_rank(rank, taxon)
+            except KeyError:
+                if 'Candidatus' in taxon:
+                    taxon = ' '.join(taxon.split()[:2])
+                else:
+                    taxon = taxon.split()[0]
+                try:
+                    tree.ancestor_rank(rank, taxon)
+                except KeyError:
+                    return taxon
+
+    def contig_condensor(contig_tbl):
+        contig_tbl = contig_tbl.astype(str)
+        if rank:
+            contig_tbl[rank] = [at_rank(taxon) for taxon in contig_tbl['taxon']]
+            return contig_tbl.groupby(by=rank).apply(lambda sub_tbl: sub_tbl.iloc[0])
+        return contig_tbl.groupby(by='taxon').apply(lambda sub_tbl: sub_tbl.iloc[0])
+
+    assigned = assigned.groupby(by='contig').apply(contig_condensor)
+    return assigned
+
