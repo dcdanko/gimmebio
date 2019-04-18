@@ -2,6 +2,7 @@
 
 import click
 import pandas as pd
+from Bio import SeqIO
 
 from .assign_contigs import (
     assign_contigs,
@@ -37,3 +38,57 @@ def cli_condense_ids(sep, rank, assignment_file, outfile):
     tbl = pd.read_csv(assignment_file, sep=sep, index_col=0)
     tbl = compress_assigned_contigs(tbl, rank=rank)
     tbl.to_csv(outfile, sep=sep)
+
+
+@assembly.command('cat-fastas')
+@click.option('-d', '--delim', default='::')
+@click.option('-l', '--min-len')
+@click.argument('outfile', type=click.File('w'))
+@click.argument('fasta_files', type=click.File('r'), nargs=-1)
+def cli_cat_fastas(delim, min_len, outfile, fasta_files):
+    """Concatenate fastas, adding filenames to ids.
+
+    For convenience also filter by length.
+    """
+    def seq_gen():
+        for fasta_file in fasta_files:
+            for rec in SeqIO.parse(fasta_files, 'fasta'):
+                if len(rec.seq) < min_len:
+                    continue
+                rec.id = f'{fasta_file.name}{delim}{rec.id}'
+                yield rec
+
+    SeqIO.write(seq_gen, outfile, 'fasta')
+
+
+@assembly.command('filter-homologous')
+@click.option('-p', '--min-perc-id', default=0.95)
+@click.option('-l', '--min-len-frac', default=0.8)
+@click.argument('outfile', type=click.File('w'))
+@click.argument('m8file', type=click.File('r'))
+@click.argument('fasta_files', type=click.File('r'), nargs=-1)
+def cli_filter_homologous(min_perc_id, min_len_frac, outfile, m8file, fasta_files):
+    """Filter contigs that are homologous to one another keeping the largest.
+
+    Find connected components in the m8 file (presumed to be an
+    autologous alignment). Edges exist between contigs where
+    an alignment is:
+    1) Greater than <min_perc_id> similar
+    2) Longer than <min_len_frac> * min(len(c1), len(c2))
+    For each component take the longest contig and write it to a fastan.
+    """
+    pass
+
+
+@assembly.command('rpkm-from-bam')
+@click.option('-s', '--sep', default='\t')
+@click.option('-d', '--delim', default=None)
+@click.argument('outfile', type=click.File('w'))
+@click.argument('bams', type=click.File('rb'))
+def cli_rpkm_from_bam(sep, delim, outfile, bams):
+    """Create a table of RPKMS from bam files.
+
+    Assumes bam files have alignment records for each read.
+    Only takes primary alignment.
+    """
+    pass
