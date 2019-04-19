@@ -12,6 +12,7 @@ from .filter_process import (
     filter_homologous,
 )
 
+
 @click.group()
 def assembly():
     """Utilities for linked reads."""
@@ -22,29 +23,41 @@ def assembly():
 @click.option('-s', '--sep', default='\t')
 @click.option('-g', '--genbank-id-map', default=None)
 @click.option('-f', '--seq-fasta', default=None, type=click.File('r'))
+@click.option('--min-homology', default=95.0, type=float)
+@click.option('--min-alignment-len', defualt=1000, type=int)
 @click.argument('m8file', type=click.File('r'))
 @click.argument('outfile', type=click.File('w'))
-def cli_id_contigs(sep, genbank_id_map, seq_fasta, m8file, outfile):
+def cli_id_contigs(
+        sep, genbank_id_map, seq_fasta, min_homology, min_alignment_len,
+        m8file, outfile):
     """ID contigs based on the species that have the most homology to each."""
-    tbl = assign_contigs(m8file, genfile=genbank_id_map, seqfile=seq_fasta)
+    tbl = assign_contigs(
+        m8file,
+        genfile=genbank_id_map,
+        seqfile=seq_fasta,
+        min_homology=min_homology,
+        min_len=min_alignment_len,
+    )
     tbl.to_csv(outfile, sep=sep)
 
 
 @assembly.command('condense-ids')
 @click.option('-s', '--sep', default='\t')
 @click.option('-r', '--rank', default=None, help='Taxonomic rank for grouping')
+@click.option('--min-cov', default=0.9)
+@click.option('--max-cov', default=1.0)
 @click.argument('assignment_file', type=click.File('r'))
 @click.argument('outfile', type=click.File('w'))
-def cli_condense_ids(sep, rank, assignment_file, outfile):
+def cli_condense_ids(sep, rank, min_cov, max_cov, assignment_file, outfile):
     """ID contigs based on the species that have the most homology to each."""
     tbl = pd.read_csv(assignment_file, sep=sep, index_col=0)
-    tbl = compress_assigned_contigs(tbl, rank=rank)
+    tbl = compress_assigned_contigs(tbl, rank=rank, min_cov=min_cov, max_cov=max_cov)
     tbl.to_csv(outfile, sep=sep)
 
 
 @assembly.command('cat-fastas')
 @click.option('-d', '--delim', default='::')
-@click.option('-l', '--min-len')
+@click.option('-l', '--min-len', default=1000, type=int)
 @click.argument('outfile', type=click.File('w'))
 @click.argument('fasta_files', type=click.File('r'), nargs=-1)
 def cli_cat_fastas(delim, min_len, outfile, fasta_files):
@@ -54,13 +67,13 @@ def cli_cat_fastas(delim, min_len, outfile, fasta_files):
     """
     def seq_gen():
         for fasta_file in fasta_files:
-            for rec in SeqIO.parse(fasta_files, 'fasta'):
+            for rec in SeqIO.parse(fasta_file, 'fasta'):
                 if len(rec.seq) < min_len:
                     continue
                 rec.id = f'{fasta_file.name}{delim}{rec.id}'
                 yield rec
 
-    SeqIO.write(seq_gen, outfile, 'fasta')
+    SeqIO.write(seq_gen(), outfile, 'fasta')
 
 
 @assembly.command('filter-homologous')
