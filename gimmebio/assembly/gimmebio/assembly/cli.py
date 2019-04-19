@@ -3,6 +3,7 @@
 import click
 import pandas as pd
 from Bio import SeqIO
+from os.path import basename
 
 from .assign_contigs import (
     assign_contigs,
@@ -10,6 +11,7 @@ from .assign_contigs import (
 )
 from .filter_process import (
     filter_homologous,
+    rpkm_from_bams,
 )
 
 
@@ -102,12 +104,28 @@ def cli_filter_homologous(min_perc_id, min_len_frac, outfile, m8file, fasta_file
 @assembly.command('rpkm-from-bam')
 @click.option('-s', '--sep', default='\t')
 @click.option('-d', '--delim', default=None)
+@click.option(
+    '-g', '--groups',
+    type=click.File('r'), default=None, help='Two column file mapping contigs to groups.')
 @click.argument('outfile', type=click.File('w'))
+@click.argument('fasta', type=click.File('r'))
 @click.argument('bams', type=click.File('rb'))
-def cli_rpkm_from_bam(sep, delim, outfile, bams):
+def cli_rpkm_from_bam(sep, delim, groups, outfile, fasta, bams):
     """Create a table of RPKMS from bam files.
 
     Assumes bam files have alignment records for each read.
     Only takes primary alignment.
     """
-    pass
+    if '.bam' in fasta.name:
+        click.echo(f'Fasta file {fasta.name} contains ".bam", missing output argument?', err=True)
+        return
+    if groups:
+        groups = {
+            tkns[0]: tkns[1]
+            for tkns in (line.strip().split(sep) for line in groups)
+        }
+    else:
+        groups = {}
+    bams = {basename(bam.name).split(delim)[0]: bam for bam in bams}
+    rpkms = rpkm_from_bams(bams, fasta, groups=groups)
+    rpkms.to_csv(outfile, sep=sep)
