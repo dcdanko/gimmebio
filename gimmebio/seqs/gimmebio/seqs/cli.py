@@ -4,6 +4,7 @@ import click
 
 from sys import stderr, stdout
 from os.path import basename
+from Bio import SeqIO
 
 from .fastx_io import iterFasta
 from .sample_management import get_sample_name_and_end
@@ -13,10 +14,21 @@ from .concat_lanes import (
     concatenate_grouped_filenames,
 )
 
+
 @click.group()
 def seqs():
     """Utilities for kmers."""
     pass
+
+
+@seqs.command('lengths')
+@click.option('-s', '--sep', default=',')
+@click.argument('fasta_file', type=click.File('r'))
+@click.argument('out_file', type=click.File('w'))
+def seq_lengths(sep, fasta_file, out_file):
+    """Print a table of sequence lengths."""
+    for rec in SeqIO.parse(fasta_file, 'fasta'):
+        out_file.write(f'{rec.id}{sep}{len(rec.seq)}\n')
 
 
 @seqs.command('highlight')
