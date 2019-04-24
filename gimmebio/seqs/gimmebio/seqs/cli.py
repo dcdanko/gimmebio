@@ -31,6 +31,22 @@ def seq_lengths(sep, fasta_file, out_file):
         out_file.write(f'{rec.id}{sep}{len(rec.seq)}\n')
 
 
+@seqs.command('rename-seqs')
+@click.option('-p', '--prefix', default='')
+@click.option('-s', '--suffix', default='')
+@click.argument('fasta_file', type=click.File('r'))
+@click.argument('out_file', type=click.File('w'))
+def cli_rename_seqs(prefix, suffix, fasta_file, out_file):
+    """Rename fasta ids."""
+    def seq_iter():
+        for i, rec in enumerate(SeqIO.parse(fasta_file, 'fasta')):
+            old_id = rec.id
+            rec.id = f'{prefix}{i}{suffix}'
+            rec.description = f'{old_id} {rec.description}'
+            yield rec
+    SeqIO.write(seq_iter(), outfile, 'fasta')
+
+
 @seqs.command('highlight')
 @click.argument('sequence_file', type=click.File('r'))
 def highlight_DNA(sequence_file):
