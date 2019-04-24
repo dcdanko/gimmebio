@@ -5,6 +5,7 @@ from unittest import TestCase
 from gimmebio.assembly import (
     assign_contigs,
     compress_assigned_contigs,
+    condense_winner_takes_all,
 )
 from os.path import join, dirname, abspath
 
@@ -41,6 +42,13 @@ class TestAssembly(TestCase):
         with open(M8_FILE) as m8f, open(FASTA_FILE) as faf:
             tbl = assign_contigs(m8f, genfile=GENBANK_ABBREV, seqfile=faf)
         tbl = compress_assigned_contigs(tbl, min_cov=0, max_cov=10)
+        self.assertEqual(tbl.shape[0], 3)
+
+    def test_condense_ids_wta(self):
+        with open(M8_FILE) as m8f, open(FASTA_FILE) as faf:
+            tbl = assign_contigs(m8f, genfile=GENBANK_ABBREV, seqfile=faf)
+        tbl = compress_assigned_contigs(tbl, min_cov=0, max_cov=10)
+        tbl = condense_winner_takes_all(tbl)
         self.assertEqual(tbl.shape[0], 3)
 
     def test_condense_ids_rank(self):

@@ -94,6 +94,7 @@ def assign_contigs(m8file, genfile=None, seqfile=None, min_homology=95, min_len=
 
 
 def compress_assigned_contigs(assigned, rank=None, min_cov=0.9, max_cov=1.0):
+    """Return a dataframe with fewer ranks per contig."""
     assigned = assigned.query(f'contig_length_fraction > {min_cov}')
     assigned = assigned.query(f'contig_length_fraction <= {max_cov}')
     if rank:  # slow so only do it if necessary
@@ -122,3 +123,25 @@ def compress_assigned_contigs(assigned, rank=None, min_cov=0.9, max_cov=1.0):
     assigned = assigned.groupby(by='contig').apply(contig_condensor)
     return assigned
 
+
+def condense_winner_takes_all(assigned, rank=None):
+    """Return a dataframe with exactly one rank per contig.
+
+    Assign each contig to a single rank based on the ranks which are
+    already most prominent.
+    """
+    if rank is None:
+        rank = 'taxon'
+    global_counts = assigned[rank].value_counts()
+
+    def winner_takes_all(contig_tbl):
+        if contig_tbl.shape[0] == 1:
+            return contig_tbl
+
+        maxrank = None
+        for arank in contig_tbl[rank]:
+            if maxrank is None or global_counts[arank] > global_counts[maxrank]:
+                maxrank = arank
+        return contig_tbl[contig_tbl[rank] == maxrank]
+
+    return assigned.groupby(by=rank).apply(winner_takes_all)

@@ -44,7 +44,7 @@ def cli_rename_seqs(prefix, suffix, fasta_file, out_file):
             rec.id = f'{prefix}{i}{suffix}'
             rec.description = f'{old_id} {rec.description}'
             yield rec
-    SeqIO.write(seq_iter(), outfile, 'fasta')
+    SeqIO.write(seq_iter(), out_file, 'fasta')
 
 
 @seqs.command('highlight')

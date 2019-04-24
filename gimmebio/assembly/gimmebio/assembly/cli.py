@@ -8,6 +8,7 @@ from os.path import basename
 from .assign_contigs import (
     assign_contigs,
     compress_assigned_contigs,
+    condense_winner_takes_all,
 )
 from .filter_process import (
     filter_homologous,
@@ -21,12 +22,36 @@ def assembly():
     pass
 
 
+@assembly.command('group-contigs')
+@click.option('-s', '--sep', default='\t')
+@click.option('-d', '--delim', default='_')
+@click.argument('group_file', type=click.File('r'))
+@click.argument('fasta_file')
+def cli_group_contigs(sep, delim, group_file, fasta_file):
+    """Split a fasta file based on a grouping file."""
+    groups = {
+        tkns[0]: tkns[1]
+        for tkns in (line.strip().split(sep) for line in group_file)
+    }
+    recs = {}
+    for rec in SeqIO.parse(fasta_file, 'fasta'):
+        if rec.id not in groups:
+            continue
+        group = groups[rec.id]
+        recs[group] = recs.get(group, []) + [rec]
+
+    for group_name, group_recs in recs.items():
+        fasta_name = delim.join(group_name.split()) + '.fasta'
+        with open(fasta_name, "w") as output_handle:
+            SeqIO.write(group_recs, output_handle, "fasta")
+
+
 @assembly.command('id-contigs')
 @click.option('-s', '--sep', default='\t')
 @click.option('-g', '--genbank-id-map', default=None)
 @click.option('-f', '--seq-fasta', default=None, type=click.File('r'))
 @click.option('--min-homology', default=95.0, type=float)
-@click.option('--min-alignment-len', defualt=1000, type=int)
+@click.option('--min-alignment-len', default=1000, type=int)
 @click.argument('m8file', type=click.File('r'))
 @click.argument('outfile', type=click.File('w'))
 def cli_id_contigs(
@@ -44,16 +69,19 @@ def cli_id_contigs(
 
 
 @assembly.command('condense-ids')
+@click.option('-w/-r', '--winner-takes-all/--report-all', default=False)
 @click.option('-s', '--sep', default='\t')
 @click.option('-r', '--rank', default=None, help='Taxonomic rank for grouping')
 @click.option('--min-cov', default=0.9)
 @click.option('--max-cov', default=1.0)
 @click.argument('assignment_file', type=click.File('r'))
 @click.argument('outfile', type=click.File('w'))
-def cli_condense_ids(sep, rank, min_cov, max_cov, assignment_file, outfile):
+def cli_condense_ids(winner_takes_all, sep, rank, min_cov, max_cov, assignment_file, outfile):
     """ID contigs based on the species that have the most homology to each."""
     tbl = pd.read_csv(assignment_file, sep=sep, index_col=0)
     tbl = compress_assigned_contigs(tbl, rank=rank, min_cov=min_cov, max_cov=max_cov)
+    if winner_takes_all:
+        tbl = condense_winner_takes_all(tbl, rank)
     tbl.to_csv(outfile, sep=sep)
 
 
@@ -101,7 +129,7 @@ def cli_filter_homologous(min_perc_id, min_len_frac, outfile, m8file, fasta_file
     )
 
 
-@assembly.command('rpkm-from-bam')
+@assembly.command('rpkm-from-bams')
 @click.option('-s', '--sep', default='\t')
 @click.option('-d', '--delim', default=None)
 @click.option(
@@ -109,8 +137,8 @@ def cli_filter_homologous(min_perc_id, min_len_frac, outfile, m8file, fasta_file
     type=click.File('r'), default=None, help='Two column file mapping contigs to groups.')
 @click.argument('outfile', type=click.File('w'))
 @click.argument('fasta', type=click.File('r'))
-@click.argument('bams', type=click.File('rb'))
-def cli_rpkm_from_bam(sep, delim, groups, outfile, fasta, bams):
+@click.argument('bams', type=click.Path(exists=True), nargs=-1)
+def cli_rpkm_from_bams(sep, delim, groups, outfile, fasta, bams):
     """Create a table of RPKMS from bam files.
 
     Assumes bam files have alignment records for each read.
@@ -126,6 +154,6 @@ def cli_rpkm_from_bam(sep, delim, groups, outfile, fasta, bams):
         }
     else:
         groups = {}
-    bams = {basename(bam.name).split(delim)[0]: bam for bam in bams}
+    bams = {basename(bam).split(delim)[0]: bam for bam in bams}
     rpkms = rpkm_from_bams(bams, fasta, groups=groups)
     rpkms.to_csv(outfile, sep=sep)
