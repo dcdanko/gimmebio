@@ -1,6 +1,6 @@
 
 import numpy as np
-from random import random
+from random import random, shuffle
 from Bio import SeqIO
 
 MILLION = 1000 * 1000
@@ -16,9 +16,11 @@ def seq_to_matrix(seq):
 
 class ShortReadData:
 
-    def __init__(self, seq_len, seqs=[]):
-        self.index = 0
-        self.seqs, self.seq_len = seqs, seq_len
+    def __init__(self, seq_len, seqs=None):
+        self.index = None
+        self.seq_len = seq_len
+        if seqs is None:
+            seqs = []
 
     def __len__(self):
         return len(self.seqs)
@@ -27,6 +29,7 @@ class ShortReadData:
         return self.seqs[i % len(self)]
 
     def reset(self):
+        self.order = shuffle(range(len(self.seqs)))
         self.index = 0
 
     def process_seq(self, seq):
@@ -35,12 +38,18 @@ class ShortReadData:
         return seq_to_matrix(seq[diff:(diff + self.seq_len)])
 
     def next_batch(self, batch_size):
-        batch = np.array([
-            self.process_seq(self[self.index + i])
-            for i in range(batch_size)
-        ])
-        self.index += batch_size
-        return batch
+        if self.index is None:
+            self.reset()
+
+        batch = []
+        for i in range(len(batch_size)):
+            ind = self.order[self.index]
+            seq = self.seqs[ind]
+            self.index = (self.index + 1) % len(self.seqs)
+            if self.index == 0:
+                self.reset()
+            batch.append(self.process_seq(seq))
+        return np.array(batch)
 
 
 class FastqSeqData:
