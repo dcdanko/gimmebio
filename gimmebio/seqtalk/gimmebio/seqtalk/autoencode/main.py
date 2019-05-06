@@ -21,7 +21,7 @@ def train_new(fastq_file):
         onehot_dims=9,
         explicit_neurons=40,
         input_length=128,
-        conv_filters=32,
+        conv_filters=16,
         conv_kernel_size=16,
         alphabet_size=5,
         learn_rate=tf.constant(1e-1),

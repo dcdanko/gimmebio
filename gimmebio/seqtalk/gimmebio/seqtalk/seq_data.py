@@ -9,7 +9,7 @@ MILLION = 1000 * 1000
 def seq_to_matrix(seq):
     """Return a four color indicator encoding of a sequence as a row 'vector'."""
     seq = seq.upper()
-    return np.matrix([
+    return np.array([
         [1 if seqb == base else 0 for seqb in seq] for base in 'ACGT'
     ])
 
@@ -35,10 +35,10 @@ class ShortReadData:
         return seq_to_matrix(seq[diff:(diff + self.seq_len)])
 
     def next_batch(self, batch_size):
-        batch = [
+        batch = np.array([
             self.process_seq(self[self.index + i])
             for i in range(batch_size)
-        ]
+        ])
         self.index += batch_size
         return batch
 

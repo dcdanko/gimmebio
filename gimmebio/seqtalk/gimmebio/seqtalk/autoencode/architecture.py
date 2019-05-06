@@ -1,6 +1,6 @@
 import tensorflow as tf
 from argparse import Namespace
-from seqtalk.deconstruction import layer_hard_softmax
+from gimmebio.seqtalk.deconstruction import layer_hard_softmax
 
 
 def build_soft_conv_encoder(params):
@@ -27,11 +27,23 @@ def build_soft_conv_encoder(params):
     return input_flat, conv2
 
 
+def build_dense_encoder(params):
+    input_flat = tf.placeholder(
+        tf.float32,
+        [None, params.input_length * params.alphabet_size]
+    )
+    encode = tf.layers.dense(
+        input_flat,
+        params.dense_dims,
+    )
+    return input_flat, encode
+
+
 def build_explicit_encoder(params, soft_encoder_out):
     return layer_hard_softmax(
         soft_encoder_out,
         [
-            params.input_length * params.conv_filters,
+            params.dense_dims,
             params.onehot_dims * params.explicit_neurons
         ],
         params.onehot_dims,
@@ -69,16 +81,16 @@ def set_loss(params, model_input, projector_out):
         )
     )
     ts_autoencoder = tf.train.GradientDescentOptimizer(params.learn_rate)
-    ts_autoencoder.minimize(autoencoder_loss)
+    ts_autoencoder = ts_autoencoder.minimize(autoencoder_loss)
     return autoencoder_loss, ts_autoencoder
 
 
 def build_explicit_autoencoder(params, encoder_type='conv'):
     """Return (input, output) layers from an explicit conv autoencoder."""
-    if encoder_type == 'conv':
-        model_input, soft_encoder_out = build_soft_conv_encoder(params)
+    model_input, soft_encoder_out = build_dense_encoder(params)
     explicit_encoder_out = build_explicit_encoder(params, soft_encoder_out)
-    projector_out = build_projector(params, explicit_encoder_out)
+    embedding = tf.reshape(explicit_encoder_out, [-1, params.explicit_neurons, params.onehot_dims])
+    projector_out = build_projector(params, embedding)
     autoencoder_loss, ts_autoencoder = set_loss(
         params, model_input, projector_out
     )

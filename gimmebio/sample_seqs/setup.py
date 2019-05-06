@@ -9,7 +9,7 @@ requirements = [
 
 setup(
     name=microlib_name,
-    version='0.2.0',
+    version='0.2.1',
     author='David Danko',
     author_email='dcdanko@gmail.com',
     license='MIT license',
@@ -21,4 +21,5 @@ setup(
     namespace_packages=['gimmebio'],
     packages=[microlib_name],
     install_requires=requirements,
+    package_data={microlib_name: ['data/*']},
 )

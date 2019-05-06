@@ -1,4 +1,5 @@
-
+import tensorflow as tf
+import numpy as np
 
 def build_feed_dict(model, epoch, batch):
     feed_dict = {model.input_layer: batch}
@@ -20,6 +21,7 @@ def train_autoencoder(model, sess, data_source, minibatch_size=50, num_epochs=30
         data_source.train.reset()
         for _ in range(num_minibatches):
             batch = data_source.train.next_batch(minibatch_size)
+            batch = np.reshape(batch, [batch.shape[0], batch.shape[1] * batch.shape[2]])
             epoch_loss += sess.run(
                 [model.autoencoder_loss, model.ts_autoencoder],
                 feed_dict=build_feed_dict(model, epoch, batch)
@@ -30,8 +32,9 @@ def train_autoencoder(model, sess, data_source, minibatch_size=50, num_epochs=30
         loss = 0
         for _ in range(10):
             batch = data_source.test.next_batch(500)
+            batch = np.reshape(batch, [batch.shape[0], batch.shape[1] * batch.shape[2]])
             loss += sess.run(
-                [model.loss_autoencoder],
+                [model.autoencoder_loss],
                 feed_dict=build_feed_dict(model, -1, batch),
             )[0]
         validation_losses.append(loss / 10)
