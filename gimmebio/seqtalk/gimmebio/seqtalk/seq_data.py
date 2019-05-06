@@ -20,7 +20,7 @@ class ShortReadData:
         self.index = None
         self.seq_len = seq_len
         if seqs is None:
-            seqs = []
+            self.seqs = []
 
     def __len__(self):
         return len(self.seqs)
