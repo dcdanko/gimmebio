@@ -29,7 +29,7 @@ class ShortReadData:
         return self.seqs[i % len(self)]
 
     def reset(self):
-        self.order = shuffle(range(len(self.seqs)))
+        self.order = shuffle(list(range(len(self.seqs))))
         self.index = 0
 
     def process_seq(self, seq):
