@@ -42,7 +42,7 @@ class ShortReadData:
             self.reset()
 
         batch = []
-        for i in range(len(batch_size)):
+        for i in range(batch_size):
             ind = self.order[self.index]
             seq = self.seqs[ind]
             self.index = (self.index + 1) % len(self.seqs)
