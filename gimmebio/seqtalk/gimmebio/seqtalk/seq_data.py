@@ -29,7 +29,8 @@ class ShortReadData:
         return self.seqs[i % len(self)]
 
     def reset(self):
-        self.order = shuffle(list(range(len(self.seqs))))
+        self.order = list(range(len(self.seqs)))
+        shuffle(self.order)
         self.index = 0
 
     def process_seq(self, seq):
@@ -42,7 +43,7 @@ class ShortReadData:
             self.reset()
 
         batch = []
-        for i in range(batch_size):
+        for _ in range(batch_size):
             ind = self.order[self.index]
             seq = self.seqs[ind]
             self.index = (self.index + 1) % len(self.seqs)
