@@ -19,6 +19,7 @@ class ShortReadData:
     def __init__(self, seq_len, seqs=None):
         self.index = None
         self.seq_len = seq_len
+        self.alphabet_len = 4
         if seqs is None:
             self.seqs = []
 
@@ -38,7 +39,13 @@ class ShortReadData:
         diff //= 2
         return seq_to_matrix(seq[diff:(diff + self.seq_len)])
 
-    def next_batch(self, batch_size):
+    def flatten(self, seq):
+        pass
+
+    def unflatten(self, seq):
+        pass
+
+    def next_batch(self, batch_size, flat=True, type=np.float64):
         if self.index is None:
             self.reset()
 

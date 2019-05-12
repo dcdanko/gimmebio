@@ -45,6 +45,5 @@ class TestSampleSeqs(TestCase):
         sess = tf.InteractiveSession()
         sess.run(tf.global_variables_initializer())
         data_source = FastqSeqData(EXAMPLE_FASTQ, seq_len=100)
-        print(model)
         tr, va = train_autoencoder(model, sess, data_source, minibatch_size=50, num_epochs=1)
 

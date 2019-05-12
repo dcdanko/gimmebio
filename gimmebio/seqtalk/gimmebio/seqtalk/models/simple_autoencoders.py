@@ -19,7 +19,66 @@ def load_tensor(kind, tensor):
     return tensor.cpu()
 
 
-class SimpleContinuousNet(nn.Module):
+class TrainableModel(nn.Module):
+
+    @classmethod
+    def default_params(cls):
+        return TrainingParams(100, 5, 1000, 'gpu')
+
+    @classmethod
+    def prep_model(cls, data_source, training_params):
+        model = cls(data_source.input_length * data_source.alphabet_size)
+        load_tensor(training_params.processor, model)
+        model.zero_grad()
+        data_source.reset()
+        return model
+
+    @classmethod
+    def optimizer(cls, model, lr=None, momentum=None, sgd=True):
+        if sgd:
+            lr = lr if lr is not None else 0.1
+            momentum = momentum if momentum is not None else 0.9
+            return torch.optim.SGD(model.parameters(), lr=lr, momentum=momentum)
+
+    @classmethod
+    def loss(cls):
+        return torch.nn.MSELoss(reduction='sum')
+
+    @classmethod
+    def train(cls, data_source, training_params=None):
+        training_params = cls.default_params() if training_params is None else training_params
+        model = cls.prep_model(data_source, training_params)
+        optimizer = cls.optimizer(model)
+        loss_fn = cls.loss(cls)
+        for epoch in range(training_params.num_epochs):
+            epoch_loss = 0
+            for batch_num in range(training_params.minibatches_per_epoch):
+                batch_loss = cls.train_minibatch(
+                    epoch, batch_num, model,
+                    optimizer, loss_fn,
+                    data_source, training_params
+                )
+                epoch_loss += batch_loss
+            yield model, (epoch, epoch_loss.cpu().data)
+
+    @classmethod
+    def train_minibatch(cls,
+                        epoch_num, batch_num, model,
+                        optimizer, loss_fn,
+                        data_source, training_params):
+        batch = data_source.next_batch(
+            training_params.minibatch_size, flat=True, type=np.float64
+        )
+        batch = load_tensor(training_params.processor, torch.FloatTensor(batch))
+        optimizer.zero_grad()
+        pred = model(batch)
+        loss = loss_fn(pred, batch)
+        loss.backward()
+        optimizer().step()
+        return loss
+
+
+class SimpleContinuousNet(TrainableModel):
     """A very simple network that should learn the identity matrix
     with a single layer of ReLU neurons.
     """
@@ -38,40 +97,27 @@ class SimpleContinuousNet(nn.Module):
         return x
 
     @classmethod
-    def prep_model(cls, data_source, training_params):
-        model = cls(data_source.input_length * data_source.alphabet_size)
-        load_tensor(training_params.processor, model)
-        model.zero_grad()
-        data_source.train.reset()
-        return model
-
-    @classmethod
-    def train(cls, data_source, training_params):
-        model = cls.prep_model(data_source, training_params)
-
-        loss_fn = torch.nn.MSELoss(reduction='sum')
-        optimizer = torch.optim.SGD(model.parameters(), lr=0.5, momentum=0.9)
-        for epoch in range(training_params.num_epochs):
-            epoch_loss = 0
-            for _ in range(training_params.minibatches_per_epoch):
-                batch = data_source.train.next_batch(
-                    training_params.minibatch_size, flat=True, type=np.float64
-                )
-                batch = load_tensor(training_params.processor, torch.FloatTensor(batch))
-                loss = 0
-                for seq in batch:
-                    model.zero_grad()
-                    pred = model(seq)
-                    pred, seq = data_source.unflatten(pred, seq)
-                    pred = F.softmax(pred)
-                    loss += loss_fn(pred, seq)
-                    epoch_loss += loss
-                loss.backward()
-                optimizer.step()
-            yield model, (epoch, epoch_loss.cpu().data)
+    def train_minibatch(cls,
+                        epoch_num, batch_num, model,
+                        optimizer, loss_fn,
+                        data_source, training_params):
+        batch = data_source.train.next_batch(
+            training_params.minibatch_size, flat=True, type=np.float64
+        )
+        batch = load_tensor(training_params.processor, torch.FloatTensor(batch))
+        optimizer.zero_grad()
+        loss = 0
+        for seq in batch:
+            pred = model(seq)
+            pred, seq = data_source.unflatten(pred, seq)
+            pred = F.softmax(pred)
+            loss += loss_fn(pred, seq)
+        loss.backward()
+        optimizer().step()
+        return loss
 
 
-class SimpleBinaryNet(nn.Module):
+class SimpleBinaryNet(TrainableModel):
 
     def __init__(self, input_size):
         super(SimpleBinaryNet, self).__init__()
@@ -82,6 +128,5 @@ class SimpleBinaryNet(nn.Module):
 
     def forward(self, x):
         x = self.fc1(x)
-        #x = x.clamp(min=0)
         x = self.act(x)
         return x
