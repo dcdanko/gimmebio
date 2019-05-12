@@ -40,10 +40,14 @@ class ShortReadData:
         return seq_to_matrix(seq[diff:(diff + self.seq_len)])
 
     def flatten(self, seq):
-        pass
+        if len(seq.shape) == 3:
+            return np.reshape(seq, [seq.shape[0], seq.shape[1] * seq.shape[2]])
+        return np.reshape(seq, [seq.shape[1] * seq.shape[2]])
 
     def unflatten(self, seq):
-        pass
+        if len(seq.shape) == 3:
+            return np.reshape(seq, [seq.shape[0], self.alphabet_len, self.seq_len])
+        return np.reshape(seq, [self.alphabet_len, self.seq_len])
 
     def next_batch(self, batch_size, flat=True, type=np.float64):
         if self.index is None:
@@ -62,7 +66,7 @@ class ShortReadData:
 
 class FastqSeqData:
 
-    def __init__(self, filename, seq_len=100, split_frac=0.8, total=10 * MILLION):
+    def __init__(self, filename, seq_len=100, split_frac=0.8, total=MILLION):
         self.train, self.test = ShortReadData(seq_len), ShortReadData(seq_len)
         with open(filename) as fastq_handle:
             for i, rec in enumerate(SeqIO.parse(fastq_handle, "fastq")):
