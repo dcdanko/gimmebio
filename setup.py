@@ -14,14 +14,15 @@ PACKAGE_NAME = 'gimmebio'
 
 
 SOURCES = {
-    'gimmebio.seqs==0.7.0': 'gimmebio/seqs',
+    'gimmebio.seqs>=0.7.0': 'gimmebio/seqs',
     'gimmebio.sample_seqs': 'gimmebio/sample_seqs',
-    'gimmebio.kmers==0.3.0': 'gimmebio/kmers',
-    'gimmebio.linked_reads==0.3.0': 'gimmebio/linked_reads',
+    'gimmebio.kmers>=0.3.0': 'gimmebio/kmers',
+    'gimmebio.linked_reads>=0.3.0': 'gimmebio/linked_reads',
     'gimmebio.ram_seq': 'gimmebio/ram_seq',
     'gimmebio.text_plots': 'gimmebio/text_plots',
-    'gimmebio.hiveplots==0.5.0': 'gimmebio/hiveplots',
-    'gimmebio.assembly==0.2.1': 'gimmebio/assembly',
+    'gimmebio.hiveplots>=0.5.0': 'gimmebio/hiveplots',
+    'gimmebio.assembly>=0.2.1': 'gimmebio/assembly',
+    'gimmebio.pji>=0.1.0': 'gimmebio/pji',
 }
 
 
@@ -60,7 +61,7 @@ class InstallCmd(install):
 
 setup(
     name=PACKAGE_NAME,
-    version='0.12.1',
+    version='0.13.0',
     author='David Danko',
     author_email='dcdanko@gmail.com',
     description='Utilities and explorations in computational biology',

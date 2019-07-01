@@ -20,6 +20,7 @@ sub_clis = [
     ('gimmebio.text_plots.cli', 'plots'),
     ('gimmebio.linked_reads.cli', 'lr'),
     ('gimmebio.assembly.cli', 'assembly'),
+    ('gimmebio.pji.cli', 'pji'),
 ]
 
 

@@ -13,6 +13,7 @@ from .assign_contigs import (
 from .filter_process import (
     filter_homologous,
     rpkm_from_bams,
+    crunch_alignment,
 )
 
 
@@ -58,6 +59,7 @@ def cli_id_contigs(
         sep, genbank_id_map, seq_fasta, min_homology, min_alignment_len,
         m8file, outfile):
     """ID contigs based on the species that have the most homology to each."""
+    click.echo('Identifying Contigs')
     tbl = assign_contigs(
         m8file,
         genfile=genbank_id_map,
@@ -85,6 +87,24 @@ def cli_condense_ids(winner_takes_all, sep, rank, min_cov, max_cov, assignment_f
     tbl.to_csv(outfile, sep=sep)
 
 
+@assembly.command('crunch-queries')
+@click.option('-s', '--sep', default='\t', help='Separation character in tables')
+@click.option('-d', '--delim', default='.', help='Delimiter for sample names in queries')
+@click.option('-r', '--rank', default='taxon', help='Taxonomic rank for grouping')
+@click.option('-u/-a', '--allow-unassigned/--assigned-only', default=True)
+@click.argument('m8file', type=click.File('r'))
+@click.argument('assignment_file', type=click.File('r'))
+@click.argument('outfile', type=click.File('w'))
+def cli_crunch_queries(sep, delim, rank, allow_unassigned, m8file, assignment_file, outfile):
+    """Map a set of queries aligned to a set of contigs to their taxonomic ids."""
+    taxaids = pd.read_csv(assignment_file, sep=sep, index_col=0)
+    tbl = crunch_alignment(
+        m8file, taxaids,
+        rank=rank, query_delim=delim, allow_unassigned=allow_unassigned
+    )
+    tbl.fillna(0).to_csv(outfile, sep=sep)
+
+
 @assembly.command('cat-fastas')
 @click.option('-d', '--delim', default='::')
 @click.option('-l', '--min-len', default=1000, type=int)
@@ -109,10 +129,11 @@ def cli_cat_fastas(delim, min_len, outfile, fasta_files):
 @assembly.command('filter-homologous')
 @click.option('-p', '--min-perc-id', default=0.95)
 @click.option('-l', '--min-len-frac', default=0.8)
+@click.option('-g', '--group-file', default=None)
 @click.argument('outfile', type=click.File('w'))
 @click.argument('m8file', type=click.File('r'))
 @click.argument('fasta_file', type=click.File('r'))
-def cli_filter_homologous(min_perc_id, min_len_frac, outfile, m8file, fasta_file):
+def cli_filter_homologous(min_perc_id, min_len_frac, group_file, outfile, m8file, fasta_file):
     """Filter contigs that are homologous to one another keeping the largest.
 
     Find connected components in the m8 file (presumed to be an
@@ -123,7 +144,10 @@ def cli_filter_homologous(min_perc_id, min_len_frac, outfile, m8file, fasta_file
     For each component take the longest contig and write it to a fasta.
     """
     SeqIO.write(
-        filter_homologous(m8file, fasta_file, min_perc_id=min_perc_id, min_len_frac=min_len_frac),
+        filter_homologous(
+            m8file, fasta_file,
+            group_filename=group_file, min_perc_id=min_perc_id, min_len_frac=min_len_frac
+        ),
         outfile,
         'fasta'
     )

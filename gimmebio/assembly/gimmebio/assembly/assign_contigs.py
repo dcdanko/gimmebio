@@ -1,6 +1,7 @@
 
 import gzip
 import pandas as pd
+import networkx as nx
 from capalyzer.packet_parser import NCBITaxaTree
 
 from gimmebio.constants import GIMMEBIO_HOME
@@ -23,7 +24,7 @@ def get_ncbi_id(gbid, gb_id_tbl):
 
 def get_genbank(genfile=None):
     """Return a dictionary mapping genbank ids to species names."""
-    if not isfile(genfile):
+    if not genfile or not isfile(genfile):
         try:
             genfile = environ['GIMMEBIO_GENBANK_IDS']
         except KeyError:
@@ -38,18 +39,50 @@ def get_genbank(genfile=None):
     return id_tbl
 
 
+def get_max_merged_length(intervals):
+    """Merge overlapping intervals and return the maximum."""
+    def overlaps(a, b):
+        if a[0] >= b[0] and a[0] <= b[1]:
+            return True
+        if a[1] >= b[0] and a[1] <= b[1]:
+            return True
+        return False
+
+    G = nx.Graph()
+    for i1 in intervals:
+        G.add_node(i1)
+        for i2 in intervals:
+            if overlaps(i1, i2):
+                G.add_edge(i1, i2)
+
+    max_length = -1
+    for component in nx.connected_components(G):
+        cstart, cend = 1000 * 1000 * 1000 * 1000, -1
+        for start, end in component:
+            cstart, cend = min(cstart, start), max(cend, end)
+        max_length = max(max_length, cend - cstart)
+    return max_length
+
+
 def map_taxa_to_contigs(m8file, min_homology=95, min_len=1000):
     """Reurn a nested dictionary mapping the high-homology length of each taxa for each contig."""
     contig_tbl = {}
     for tkns in (line.strip().split('\t') for line in m8file):
-        contig_id, gbid, perc_id, length = tkns[:4]
+        contig_id, gbid, perc_id, length, _, _, contig_start, contig_end = tkns[:8]
         length, perc_id = int(length), float(perc_id)
+        contig_interval = (int(contig_start), int(contig_end))
         if perc_id < min_homology or length < min_len:
             continue
         my_contig_tbl = contig_tbl.get(contig_id, {})
-        my_contig_tbl[gbid] = length + my_contig_tbl.get(gbid, 0)
+        my_contig_tbl[gbid] = my_contig_tbl.get(gbid, []) + [contig_interval]
         contig_tbl[contig_id] = my_contig_tbl
-    return contig_tbl
+
+    out_tbl = {}
+    for contig_id, sub_tbl in contig_tbl.items():
+        out_tbl[contig_id] = {}
+        for gbid, intervals in sub_tbl.items():
+            out_tbl[contig_id][gbid] = get_max_merged_length(intervals)
+    return out_tbl
 
 
 def filter_contig_assignments(taxa, retain_fraction=2):

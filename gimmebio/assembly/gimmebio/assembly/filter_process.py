@@ -6,7 +6,7 @@ from Bio import SeqIO
 
 
 
-def filter_homologous(m8file, fasta, min_perc_id=0.95, min_len_frac=0.8):
+def filter_homologous(m8file, fasta, group_filename=None, min_perc_id=0.95, min_len_frac=0.8):
     """Return a generator of contigs.
 
     Filter contigs that are homologous to one another keeping the largest.
@@ -23,13 +23,20 @@ def filter_homologous(m8file, fasta, min_perc_id=0.95, min_len_frac=0.8):
     components = find_m8_components(
         m8file, length_map, min_perc_id=min_perc_id, min_len_frac=min_len_frac
     )
-    my_maxes = set()
+    my_maxes, my_groups = set(), {}
     for component in components:
         max_contig = None
         for contig in component:
             if max_contig is None or length_map[contig] > length_map[max_contig]:
                 max_contig = contig
         my_maxes.add(max_contig)
+        my_groups[max_contig] = set([rec for rec in component])
+
+    if group_filename:
+        with open(group_filename, 'w') as gf:
+            for rep, seconds in my_groups.items():
+                line = rep + ',' + ','.join(seconds)
+                print(line, file=gf)
 
     for rec in SeqIO.parse(fasta, 'fasta'):
         if rec.id in my_maxes:
@@ -93,3 +100,30 @@ def rpkm_from_bams(bamfiles, fasta, groups={}):
     }, orient='index').fillna(0)
     return rpkms
 
+
+def crunch_alignment(m8file, taxaids, query_delim=None, allow_unassigned=True, rank='taxon'):
+    queries_to_contigs = {}
+    for line in m8file:
+        tkns = line.strip().split()
+        q, c = tkns[:2]
+        if query_delim:
+            q = q.split(query_delim)[0]
+        myset = queries_to_contigs.get(q, set())
+        myset.add(c)
+        queries_to_contigs[q] = myset
+
+    tbl = {}
+    for query, contigs in queries_to_contigs.items():
+        tbl[query] = {}
+        for contig in contigs:
+            try:
+                taxa = taxaids.loc[contig, rank]
+                if not isinstance(taxa, str):
+                    taxa = taxa.iloc[0]
+                tbl[query][taxa] = 1
+            except KeyError:
+                if allow_unassigned:
+                    tbl[query][contig] = 1
+
+    tbl = pd.DataFrame.from_dict(tbl, orient='index')
+    return tbl
