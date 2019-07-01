@@ -141,6 +141,20 @@ def cli_uninterleave_fastq(file_in, file_1_out, file_2_out):
             file_2_out.write(line)
 
 
+@seqs.command('interleave-fastq')
+@click.argument('file_1_in', type=click.File('r'))
+@click.argument('file_2_in', type=click.File('r'))
+@click.argument('file_out', type=click.File('w'))
+def cli_interleave_fastqs(file_1_in, file_2_in, file_out):
+    """Uninterleave a fastq file."""
+    for i, line in enumerate(file_1_in):
+        i %= 4
+        file_out.write(line)
+        if i == 3:
+            for _ in range(4):
+                file_out.write(file_2_in.readline())
+
+
 @seqs.command('filter-contigs')
 @click.option('-l', '--min-len', default=1000, help='minimum contig length')
 @click.argument('file_in', type=click.File('r'))
