@@ -23,6 +23,7 @@ SOURCES = {
     'gimmebio.hiveplots>=0.5.0': 'gimmebio/hiveplots',
     'gimmebio.assembly>=0.2.1': 'gimmebio/assembly',
     'gimmebio.pji>=0.1.0': 'gimmebio/pji',
+    'gimmebio.entropy_scores>=0.1.0': 'gimmebio/entropy_scores',
 }
 
 
@@ -61,7 +62,7 @@ class InstallCmd(install):
 
 setup(
     name=PACKAGE_NAME,
-    version='0.13.0',
+    version='0.14.0',
     author='David Danko',
     author_email='dcdanko@gmail.com',
     description='Utilities and explorations in computational biology',
