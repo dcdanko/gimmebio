@@ -3,7 +3,12 @@
 from unittest import TestCase
 from os.path import dirname, join
 
-from gimmebio.entropy_scores import entropy_score, clump_score
+from gimmebio.entropy_scores import (
+    entropy_score_bam,
+    entropy_score_fastq,
+    clump_score,
+)
+from gimmebio.sample_seqs import EXAMPLE_FASTQ
 
 
 BAM_FILE = join(dirname(__file__), 'test_entropy_scores.bam')
@@ -12,9 +17,15 @@ BAM_FILE = join(dirname(__file__), 'test_entropy_scores.bam')
 class TestEntropyScores(TestCase):
     """Test suite for entropy scores."""
 
-    def test_entropy_scores(self):
+    def test_entropy_scores_bam(self):
         """Test that entropy score works."""
-        val = entropy_score(BAM_FILE)
+        val = entropy_score_bam(BAM_FILE)
+        self.assertTrue(val >= 0)
+        self.assertTrue(val <= 1)
+
+    def test_entropy_scores_fastq(self):
+        """Test that entropy score works."""
+        val = entropy_score_fastq(EXAMPLE_FASTQ)
         self.assertTrue(val >= 0)
         self.assertTrue(val <= 1)
 
