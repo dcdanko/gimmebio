@@ -21,7 +21,7 @@ sub_clis = [
     ('gimmebio.linked_reads.cli', 'lr'),
     ('gimmebio.assembly.cli', 'assembly'),
     ('gimmebio.pji.cli', 'pji'),
-    ('gimmebio.entropy_scores.cli', 'cli_entropy_scores'),
+    ('gimmebio.entropy_scores.cli', 'entropy'),
 ]
 
 
