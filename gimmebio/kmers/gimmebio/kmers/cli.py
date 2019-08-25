@@ -9,11 +9,16 @@ from .kmer_stats import jf_stats
 from .kmers import make_kmers
 from .min_sparse_kmers import MinSparseKmerSet
 
+from .clustering.cli import cli_kmer_cluster
+
 
 @click.group()
 def kmers():
     """Utilities for kmers."""
     pass
+
+
+kmers.add_command(cli_kmer_cluster)
 
 
 @kmers.command('standard')

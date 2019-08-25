@@ -45,7 +45,7 @@ def seq_to_matrix(seq):
 
 def seq_power_series(seq, RS=None):
     """Return a list with the ram power series for a seq."""
-    if not RS:
+    if RS is None:
         RS = rs_matrix(len(seq))
     seq = seq_to_matrix(seq)
     rft = abs(np.dot(RS, seq))
