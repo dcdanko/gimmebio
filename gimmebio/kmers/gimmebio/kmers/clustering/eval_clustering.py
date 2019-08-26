@@ -33,16 +33,21 @@ def radial_cover_cluster(kmer_generator):
 
 def kd_cluster(kmer_generator):
     """Build and eval radial clusters over kmers."""
-    search_set = [kmer_generator() for _ in range(100)]
-    kdrft_cover = KDRFTCover(3)
+    search_set = [kmer_generator.generate() for _ in range(100)]
+    kmers = [kmer_generator.generate() for _ in range(1000 * 1000)]
     tbl = []
-    for N in [1000, 10 * 1000, 100 * 1000]:
+    for H in [1, 3]:
+        kdrft_cover = KDRFTCover(H)
+
         start = clock()
-        for kmer in [kmer_generator() for _ in range(N)]:
+        for kmer in kmers:
             kdrft_cover.add(kmer)
         build_time = clock() - start
+
         stats = kdrft_cover.stats()
         stats['build_time'] = build_time
+        stats['H'] = H
+
         start = clock()
         for kmer in search_set:
             kdrft_cover.search(kmer, 2)

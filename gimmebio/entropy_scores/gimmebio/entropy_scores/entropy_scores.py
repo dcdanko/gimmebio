@@ -43,9 +43,9 @@ def gini_coeff(vals, nvals, min_bins=3):
     return total_area
 
 
-def clump_score(bam_filename, binsize=10000):
+def clump_score(bam_filename, binsize=10000, min_bins=3):
     samfile = pysam.AlignmentFile(bam_filename, "rb")
-    return _clump_score(samfile, binsize=binsize)
+    return _clump_score(samfile, binsize=binsize, min_bins=min_bins)
 
 
 def _clump_score(samfile, binsize=10000, min_bins=3):
@@ -63,5 +63,5 @@ def entropy_and_clump_score(bam_filename, binsize=10000, min_bins=3):
     samfile = pysam.AlignmentFile(bam_filename, "rb")
     escores = pd.Series([seq_entropy_score(read.query_sequence) for read in samfile])
     escore = escores.mean()
-    cscore = _clump_score(samfile, binsize=binsize, min_bins=min_bins)
+    cscore = clump_score(bam_filename, binsize=binsize, min_bins=min_bins)
     return escore, cscore

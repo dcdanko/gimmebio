@@ -61,7 +61,6 @@ class KDRFTCover:
             index = len(self.centroids) - 1
             self.clusters[index] = set([index])
             if len(self.centroids) == SEED_SIZE:
-                print('Building seed tree...')
                 self.build()
 
         else:
@@ -72,7 +71,7 @@ class KDRFTCover:
     def batch_add(self):
         if not self.batch:
             return
-        print('Adding batch...')
+
         dists, points = self.tree.query(
             np.array(self.batch), eps=0.2, distance_upper_bound=self.radius
         )
@@ -87,7 +86,6 @@ class KDRFTCover:
         self.points += self.batch
         self.batch = []
 
-        print('Rebuilding tree...')
         self.build()
 
     def build(self):
@@ -106,24 +104,7 @@ class KDRFTCover:
         centroids = self.tree.query_ball_point(rft, HAMMING_CONVERSION[max_dist], eps=0.01)
         return centroids
 
-    def greedy_clusters(self):
-        self.close()
-        clusters, clustered_points = {}, set()
-        if not self.closed:
-            self.build()
-        for i, rft in enumerate(self.points):
-            if i in clustered_points:
-                continue
-            clusters[i] = set([i])
-            clustered_points.add(i)
-            pts = set(self.tree.query_ball_point(rft, self.radius, eps=0.01))
-            pts -= clustered_points
-            clusters[i] |= pts
-            clustered_points |= pts
-        self.clusters = clusters
-
     def stats(self):
-        #self.greedy_clusters()
         return {
             'num_kmers': sum([len(clust) for clust in self.clusters.values()]),
             'num_singletons': sum([
