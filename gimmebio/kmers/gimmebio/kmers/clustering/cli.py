@@ -32,7 +32,7 @@ def eval_kdrft_cluster(kmer_len, num_kmers, outfile):
     )
     print(f'Made {len(ecoli_kmers)} E. coli k-mers for testing')
 
-    tbl = [el for el in eval_kd_cluster(ecoli_kmers)]
+    tbl = [el for el in eval_kd_cluster(ecoli_kmers) if print(el) or True]
     tbl = pd.DataFrame(tbl)
     tbl.to_csv(outfile)
 
