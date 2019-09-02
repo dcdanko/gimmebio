@@ -1,5 +1,6 @@
 from time import clock
 import pandas as pd
+from random import shuffle
 
 from .radial_cover import GreedyRadialCover
 from .kd_rft_cover import KDRFTCover
@@ -31,17 +32,17 @@ def radial_cover_cluster(kmer_generator):
     return pd.DataFrame(tbl)
 
 
-def kd_cluster(kmer_generator):
+def eval_kd_cluster(kmers):
     """Build and eval radial clusters over kmers."""
-    search_set = [kmer_generator.generate() for _ in range(100)]
-    kmers = [kmer_generator.generate() for _ in range(1000 * 1000)]
-    tbl = []
-    for H in [1, 3]:
+    shuffle(kmers)
+    search_set, kmers = kmers[:1000], kmers[1000:]
+    for H in [3, 2, 1, 12]:
         kdrft_cover = KDRFTCover(H)
 
         start = clock()
         for kmer in kmers:
             kdrft_cover.add(kmer)
+        kdrft_cover.greedy_clusters()
         build_time = clock() - start
 
         stats = kdrft_cover.stats()
@@ -51,7 +52,7 @@ def kd_cluster(kmer_generator):
         start = clock()
         for kmer in search_set:
             kdrft_cover.search(kmer, 2)
-        stats['search_time'] = clock() - start
-        tbl.append(stats)
+        stats['search_time'] = (clock() - start)
+        yield stats
 
-        yield pd.DataFrame(tbl)
+

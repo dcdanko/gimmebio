@@ -1,12 +1,13 @@
 
 import click
 from time import clock
+import pandas as pd
 
 from gimmebio.ram_seq import rs_matrix, seq_power_series
 from gimmebio.sample_seqs import EcoliGenome
 from gimmebio.kmers import make_kmers
 
-from .eval_clustering import radial_cover_cluster, kd_cluster
+from .eval_clustering import radial_cover_cluster, eval_kd_cluster
 
 
 @click.group('cluster')
@@ -17,54 +18,28 @@ def cli_kmer_cluster():
 @cli_kmer_cluster.command('eval-radial')
 @click.option('-o', '--outfile', default='-', type=click.File('w'))
 def eval_radial_kmer_cluster(outfile):
-
-    ecoli_kmers = make_kmers(EcoliGenome().longest_contig(), 21, canon=True)
-    print(f'Made {len(ecoli_kmers)} k-mers for testing')
-
-    class KmerGenerator:
-
-        def __init__(self, kmers):
-            self.i = 0
-            self.kmers = kmers
-
-        def generate(self):
-            kmer = self.kmers[self.i]
-            self.i += 1
-            return kmer
-
-    kmer_generator = KmerGenerator(ecoli_kmers)
-
-    tbl = radial_cover_cluster(kmer_generator.generate)
-    tbl.to_csv(outfile)
+    pass
 
 
 @cli_kmer_cluster.command('eval-kdrft')
+@click.option('-k', '--kmer-len', default=32)
+@click.option('-n', '--num-kmers', default=1000, help='Number of kmers to cluster.')
 @click.option('-o', '--outfile', default='-', type=click.File('w'))
-def eval_kdrft_cluster(outfile):
+def eval_kdrft_cluster(kmer_len, num_kmers, outfile):
+    ecoli_kmers = make_kmers(
+        EcoliGenome().longest_contig()[:kmer_len + num_kmers + 1000 - 1],
+        kmer_len, canon=True
+    )
+    print(f'Made {len(ecoli_kmers)} E. coli k-mers for testing')
 
-    ecoli_kmers = make_kmers(EcoliGenome().longest_contig()[:1020000], 32, canon=True)
-    print(f'Made {len(ecoli_kmers)} k-mers for testing')
-
-    class KmerGenerator:
-
-        def __init__(self, kmers):
-            self.i = 0
-            self.kmers = kmers
-
-        def generate(self):
-            kmer = self.kmers[self.i]
-            self.i += 1
-            return kmer
-
-    kmer_generator = KmerGenerator(ecoli_kmers)
-
-    for tbl in kd_cluster(kmer_generator):
-        tbl.to_csv(outfile)
+    tbl = [el for el in eval_kd_cluster(ecoli_kmers)]
+    tbl = pd.DataFrame(tbl)
+    tbl.to_csv(outfile)
 
 
 @cli_kmer_cluster.command('time-ramify')
 def cli_time_ramify():
-    ecoli_kmers = make_kmers(EcoliGenome().longest_contig()[:100031], 32, canon=True)
+    ecoli_kmers = make_kmers(EcoliGenome().longest_contig()[:10131], 32, canon=True)
     print(f'Made {len(ecoli_kmers)} k-mers for testing')
 
     start = clock()
