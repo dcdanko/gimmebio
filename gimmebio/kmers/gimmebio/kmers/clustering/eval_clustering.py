@@ -36,7 +36,7 @@ def eval_kd_cluster(kmers):
     """Build and eval radial clusters over kmers."""
     shuffle(kmers)
     search_set, kmers = kmers[:1000], kmers[1000:]
-    for H in [4, 3, 2, 1]:
+    for H in [0.15, 0.125, 0.1, 0.075, 0.05]:
         kdrft_cover = KDRFTCover(H)
 
         start = clock()

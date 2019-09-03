@@ -1,37 +1,27 @@
 import numpy as np
 import pandas as pd
 from gimmebio.ram_seq import rs_matrix, seq_power_series
+from gimmebio.seqs import (
+    hamming_distance,
+    needle_distance,
+)
 from scipy.spatial import KDTree
 
-HAMMING_CONVERSION = {
-    0: 0.0,
-    1: 0.05,
-    2: 0.10,
-    3: 0.15,
-    4: 0.20,
-}
 
 SEED_SIZE = 10 * 1000
 BALANCE_GAP = 10 * 1000
 BATCH_SIZE = 1000
 
 
-def hamming_distance(k1, k2):
-    d = 0
-    for v1, v2 in zip(k1, k2):
-        d += 1 if v1 != v2 else 0
-    return d
-
-
 class KDRFTCover:
 
-    def __init__(self, hamming_radius, seed_size=-1):
+    def __init__(self, radius, seed_size=-1):
         self.rf_coeffs = None
         self.seed_size = seed_size
         self.points = []
         self.centroids = []
         self.batch = []
-        self.radius = HAMMING_CONVERSION[hamming_radius]
+        self.radius = radius
         self.clusters = {}
         self.tree = None
         self.raw = []
@@ -39,7 +29,7 @@ class KDRFTCover:
     def ramify(self, kmer):
         if self.rf_coeffs is None:
             self.rf_coeffs = rs_matrix(len(kmer))
-        rft = seq_power_series(kmer, RS=self.rf_coeffs)[:min(16, len(kmer))]
+        rft = seq_power_series(kmer, RS=self.rf_coeffs)[:min(12, len(kmer))]
         return np.array(rft)
 
     def add(self, kmer):
@@ -49,31 +39,52 @@ class KDRFTCover:
 
     def search(self, kmer, max_dist):
         rft = self.ramify(kmer)
-        centroids = self.tree.query_ball_point(rft, HAMMING_CONVERSION[max_dist], eps=0.01)
+        centroids = self.tree.query_ball_point(rft, max_dist, eps=0.01)
         return centroids
 
     def greedy_clusters(self):
-        self.tree = KDTree(np.array(self.points))
+        all_tree = KDTree(np.array(self.points))
         clusters, clustered_points = {}, set()
+        batch_map, batch_points = {}, []
         for i, rft in enumerate(self.points):
             if i in clustered_points:
                 continue
-            clusters[i] = set([i])
-            clustered_points.add(i)
-            pts = set(self.tree.query_ball_point(rft, self.radius, eps=0.1))
-            pts -= clustered_points
-            clusters[i] |= pts
-            clustered_points |= pts
+            batch_map[len(batch_points)] = i
+            batch_points.append(rft)
+            if len(batch_points) == 1000:
+                clusters, clustered_points = self._greedy_cluster_batch(
+                    all_tree, batch_map, batch_points, clusters, clustered_points
+                )
+                batch_map, batch_points = {}, []
+        if batch_points:
+            clusters, clustered_points = self._greedy_cluster_batch(
+                all_tree, batch_map, batch_points, clusters, clustered_points
+            )
         self.clusters = clusters
         self.centroids = [self.points[i] for i in clusters.keys()]
         self.tree = KDTree(np.array(self.centroids))
+
+    def _greedy_cluster_batch(self, all_tree, batch_map, batch_points, clusters, clustered_points):
+        query_tree = KDTree(np.array(batch_points))
+        result = query_tree.query_ball_tree(all_tree, self.radius, eps=0.1)
+        for i, pts in enumerate(result):
+            index_in_all_points = batch_map[i]
+            if index_in_all_points in clustered_points:
+                continue
+            clusters[index_in_all_points] = set([index_in_all_points])
+            clustered_points.add(index_in_all_points)
+            pts = set(pts)
+            pts -= clustered_points
+            clusters[index_in_all_points] |= pts
+            clustered_points |= pts
+        return clusters, clustered_points
 
     def _cluster_radius(self):
         all_dists = []
         for centroid, cluster in self.clusters.items():
             centroid, dists = self.raw[centroid], []
             for point in [self.raw[i] for i in cluster]:
-                dists.append(hamming_distance(centroid, point))
+                dists.append(needle_distance(centroid, point))
             all_dists.append(pd.Series(dists).quantile([0.5, 0.80, 0.95, 1]))
         all_quants = pd.DataFrame(all_dists).mean()
         return all_quants
