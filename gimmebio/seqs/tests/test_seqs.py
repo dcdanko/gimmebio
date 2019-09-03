@@ -14,16 +14,16 @@ class TestSeqs(TestCase):
 
     def test_needle_mismatch(self):
         d = needle_distance('ATCG', 'AACG')
-        self.assertAlmostEqual(d, (30 - 5) / 4)
+        self.assertAlmostEqual(d, -(3 - .5) / 4)
 
     def test_needle_gap_front(self):
         d = needle_distance('TAACG', 'AACG')
-        self.assertAlmostEqual(d, (40 - 6) / 4)
+        self.assertAlmostEqual(d, -(4 - .6) / 4)
 
     def test_needle_gap_back(self):
         d = needle_distance('AACG', 'AACGT')
-        self.assertAlmostEqual(d, (40 - 6) / 4)
+        self.assertAlmostEqual(d, -(4 - .6) / 4)
 
     def test_needle_gap_middle(self):
         d = needle_distance('AACG', 'AATCG')
-        self.assertAlmostEqual(d, (40 - 6) / 4)
+        self.assertAlmostEqual(d, -(4 - .6) / 4)

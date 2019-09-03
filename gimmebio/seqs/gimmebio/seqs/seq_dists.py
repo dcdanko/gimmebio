@@ -11,7 +11,7 @@ def hamming_distance(seq1, seq2, normalized=True):
     return d
 
 
-def needle_distance(seq1, seq2, match_score=10, mismatch_penalty=-5, gap_penalty=-6, normalize=True):
+def needle_distance(seq1, seq2, match_score=-1, mismatch_penalty=0.5, gap_penalty=0.6, normalize=True):
     score = np.zeros((len(seq1) + 1, len(seq2) + 1))
     for i in range(len(seq1) + 1):
         score[i][0] = gap_penalty * i
@@ -26,7 +26,7 @@ def needle_distance(seq1, seq2, match_score=10, mismatch_penalty=-5, gap_penalty
             match = score[i - 1][j - 1] + _match_score(seq1[i - 1], seq2[j - 1])
             delete = score[i - 1][j] + gap_penalty
             insert = score[i][j - 1] + gap_penalty
-            score[i][j] = max(match, delete, insert)
+            score[i][j] = min(match, delete, insert)
     final_score = score[len(seq1)][len(seq2)]
     if normalize:
         final_score /= min(len(seq1), len(seq2))
