@@ -43,7 +43,7 @@ class KDRFTCover:
         return centroids
 
     def greedy_clusters(self):
-        all_tree = KDTree(np.array(self.points))
+        all_tree, index_map = KDTree(np.array(self.points)), {i: i for i in range(len(self.points))}
         clusters, clustered_points = {}, set()
         batch_map, batch_points = {}, []
         for i, rft in enumerate(self.points):
@@ -53,18 +53,35 @@ class KDRFTCover:
             batch_points.append(rft)
             if len(batch_points) == 1000:
                 clusters, clustered_points = self._greedy_cluster_batch(
-                    all_tree, batch_map, batch_points, clusters, clustered_points
+                    all_tree, index_map,
+                    batch_map, batch_points,
+                    clusters, clustered_points
                 )
                 batch_map, batch_points = {}, []
+
+                # Rebuild all_tree to only include points which are not yet clustered
+                # this works because we cannot cluster points twice and it makes
+                # the search space smaller (at the expense of rebuilding the tree and
+                # added code complexity for offset)
+                unclustered_points, index_map = [], {}
+                for i, point in enumerate(self.points):
+                    if i in clustered_points:
+                        continue
+                    index_map[len(unclustered_points)] = i
+                    unclustered_points.append(point)
+                if unclustered_points:
+                    all_tree = KDTree(np.array(unclustered_points))
+
         if batch_points:
             clusters, clustered_points = self._greedy_cluster_batch(
-                all_tree, batch_map, batch_points, clusters, clustered_points
+                all_tree, index_map, batch_map, batch_points, clusters, clustered_points
             )
         self.clusters = clusters
         self.centroids = [self.points[i] for i in clusters.keys()]
         self.tree = KDTree(np.array(self.centroids))
 
-    def _greedy_cluster_batch(self, all_tree, batch_map, batch_points, clusters, clustered_points):
+    def _greedy_cluster_batch(self, all_tree, index_map, batch_map, batch_points,
+                              clusters, clustered_points):
         query_tree = KDTree(np.array(batch_points))
         result = query_tree.query_ball_tree(all_tree, self.radius, eps=0.1)
         for i, pts in enumerate(result):
@@ -73,7 +90,7 @@ class KDRFTCover:
                 continue
             clusters[index_in_all_points] = set([index_in_all_points])
             clustered_points.add(index_in_all_points)
-            pts = set(pts)
+            pts = {index_map[pt] for pt in pts}
             pts -= clustered_points
             clusters[index_in_all_points] |= pts
             clustered_points |= pts
