@@ -42,7 +42,7 @@ class KDRFTCover:
         centroids = self.tree.query_ball_point(rft, max_dist, eps=0.01)
         return centroids
 
-    def greedy_clusters(self):
+    def greedy_clusters(self, logger=None):
         all_tree, index_map = KDTree(np.array(self.points)), {i: i for i in range(len(self.points))}
         clusters, clustered_points = {}, set()
         batch_map, batch_points = {}, []
@@ -52,6 +52,8 @@ class KDRFTCover:
             batch_map[len(batch_points)] = i
             batch_points.append(rft)
             if len(batch_points) == 1000:
+                if logger is not None:
+                    logger(f'Running batch, starting with {len(clusters)} clusters')
                 clusters, clustered_points = self._greedy_cluster_batch(
                     all_tree, index_map,
                     batch_map, batch_points,
@@ -105,6 +107,12 @@ class KDRFTCover:
             all_dists.append(pd.Series(dists).quantile([0.5, 0.80, 0.95, 1]))
         all_quants = pd.DataFrame(all_dists).mean()
         return all_quants
+
+    def to_dict(self):
+        out = {}
+        for centroid, points in self.clusters.items():
+            out[self.raw[centroid]] = [self.raw[point] for point in points]
+        return out
 
     def stats(self):
         r50, r80, r95, r100 = self._cluster_radius()

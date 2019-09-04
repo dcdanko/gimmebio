@@ -3,12 +3,14 @@ import click
 from time import clock
 import pandas as pd
 
+from json import dumps
+
 from gimmebio.ram_seq import rs_matrix, seq_power_series
 from gimmebio.sample_seqs import EcoliGenome
 from gimmebio.kmers import make_kmers
 
 from .eval_clustering import radial_cover_cluster, eval_kd_cluster
-
+from .kd_rft_cover import KDRFTCover
 
 @click.group('cluster')
 def cli_kmer_cluster():
@@ -35,6 +37,23 @@ def eval_kdrft_cluster(kmer_len, num_kmers, outfile):
     tbl = [el for el in eval_kd_cluster(ecoli_kmers) if print(el) or True]
     tbl = pd.DataFrame(tbl)
     tbl.to_csv(outfile)
+
+
+@cli_kmer_cluster.command('build-kdrft')
+@click.option('-r', '--radius', default=0.1)
+@click.option('-k', '--kmer-len', default=31)
+@click.option('-o', '--outfile', default='-', type=click.File('w'))
+@click.argument('kmer_table', type=click.File('r'))
+def build_kdrft_cluster(radius, kmer_len, outfile, kmer_table):
+    kdrft_cover = KDRFTCover(radius)
+    for line in kmer_table:
+        kmer = line.strip().split(',')[0]
+        kdrft_cover.add(kmer)
+    click.echo('Added kmers to cover.', err=True)
+    kdrft_cover.greedy_clusters(logger=lambda el: click.echo(el, err=True))
+    click.echo(pd.Series(kdrft_cover.stats()), err=True)
+    cover_as_dict = kdrft_cover.to_dict()
+    print(dumps(cover_as_dict), file=outfile)
 
 
 @cli_kmer_cluster.command('time-ramify')
