@@ -2,10 +2,10 @@
 import gimmebio.seqs
 
 
-def make_kmers(seq, K, canon=True):
+def make_kmers(seq, K, canon=True, gap=1):
     """Return a list of kmers in a sequence."""
     out = []
-    for start in range(len(seq) - K + 1):
+    for start in range(0, len(seq) - K + 1, gap):
         kmer = seq[start:start + K]
         if canon:
             kmer = gimmebio.seqs.canonical(kmer)
