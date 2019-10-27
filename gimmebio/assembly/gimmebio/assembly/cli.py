@@ -23,6 +23,61 @@ def assembly():
     pass
 
 
+@assembly.command('crunch-genomecov')
+@click.option('-s', '--sample-delim', default=None)
+@click.option('-g', '--genome-delim', default='::')
+@click.option('-o', '--outfile', type=click.File('w'), default='-')
+@click.argument('genomecovs', type=click.File('r'), nargs=-1)
+def cli_crunch_genomecov(sample_delim, genome_delim, outfile, genomecovs):
+    """Reduce a bedtools genomecov file to fraction of a genome covered."""
+    tbl = {}
+    with click.progressbar(genomecovs) as gcs:
+        for genomecov in gcs:
+            sample_name = basename(genomecov.name).split(sample_delim)[0]
+            tbl[sample_name] = {}
+            for line in genomecov:
+                tkns = line.strip().split()
+                genome_name = tkns[0].split(genome_delim)[0]
+                if genome_name not in tbl[sample_name]:
+                    tbl[sample_name][genome_name] = [0, 0]
+                depth, num_bases, total_bases = int(tkns[1]), int(tkns[2]), int(tkns[3])
+                if depth > 0:
+                    continue
+                tbl[sample_name][genome_name][0] += total_bases - num_bases  # num covered bases
+                tbl[sample_name][genome_name][1] += total_bases
+            tbl[sample_name] = {
+                genome_name: num / den
+                for genome_name, (num, den) in tbl[sample_name].items()
+                if den > 0
+            }
+        tbl = pd.DataFrame.from_dict(tbl, orient='columns')
+        tbl.to_csv(outfile)
+
+
+@assembly.command('crunch-samtools-depth')
+@click.option('-d', '--delim', default=None)
+@click.option('-o', '--outfile', type=click.File('w'), default='-')
+@click.argument('samdepths', type=click.File('r'), nargs=-1)
+def cli_crunch_genomecov(delim, outfile, samdepths):
+    """Reduce a bedtools genomecov file to fraction of a genome covered."""
+    tbl = {}
+    with click.progressbar(samdepths) as sds:
+        for samdepth in sds:
+            sample_name = basename(samdepth.name).split(delim)[0]
+            genome_name = basename(samdepth.name).split(delim)[1]
+            tbl[sample_name] = {}
+            total_bases, covered_bases = 1, 0
+            for line in samdepth:
+                tkns = line.strip().split()
+                position, depth = int(tkns[1]), int(tkns[2])
+                total_bases += 1
+                if depth > 0:
+                    covered_bases += 1
+            tbl[sample_name][genome_name] = covered_bases / total_bases
+    tbl = pd.DataFrame.from_dict(tbl, orient='columns')
+    tbl.to_csv(outfile)
+
+
 @assembly.command('group-contigs')
 @click.option('-s', '--sep', default='\t')
 @click.option('-d', '--delim', default='_')

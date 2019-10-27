@@ -13,40 +13,45 @@ def entropy():
 
 @entropy.command('bam')
 @click.option('-d', '--delim', default=None)
+@click.option('-g', '--genome-delim', default='::')
 @click.option('-t', '--tag', default=None)
 @click.option('-o', '--outfile', type=click.File('w'), default='-')
 @click.argument('bams', nargs=-1)
-def cli_entropy_scores_from_bam(delim, tag, outfile, bams):
+def cli_entropy_scores_from_bam(delim, genome_delim, tag, outfile, bams):
     tbl = {}
     for bam in bams:
         sname = basename(bam)
         if delim:
             sname = sname.split(delim)[0]
-        tbl[sname] = entropy_and_clump_score(bam)
-    for sname, (escore, cscore) in tbl.items():
-        if tag:
-            print(f'{sname},{tag},{escore},{cscore}', file=outfile)
-        else:
-            print(f'{sname},{escore},{cscore}', file=outfile)
+        tbl[sname] = entropy_and_clump_score(bam, delim=genome_delim)
+    for sname, (escores, cscores) in tbl.items():
+        for genome, cscore in cscores:
+            escore = escores[genome]
+            if tag:
+                print(f'{sname},{genome},{tag},{escore},{cscore}', file=outfile)
+            else:
+                print(f'{sname},{genome},{escore},{cscore}', file=outfile)
 
 
 @entropy.command('fastq')
 @click.option('-d', '--delim', default=None)
+@click.option('-g', '--genome-delim', default='::')
 @click.option('-t', '--tag', default=None)
 @click.option('-o', '--outfile', type=click.File('w'), default='-')
 @click.argument('fastqs', nargs=-1)
-def cli_entropy_scores_from_bam(delim, tag, outfile, fastqs):
+def cli_entropy_scores_from_fastq(delim, genome_delim, tag, outfile, fastqs):
     tbl = {}
     for fastq in fastqs:
         sname = basename(fastq)
         if delim:
             sname = sname.split(delim)[0]
-        tbl[sname] = entropy_score_fastq(fastq)
-    for sname, escore in tbl.items():
-        if tag:
-            print(f'{sname},{tag},{escore}', file=outfile)
-        else:
-            print(f'{sname},{escore}', file=outfile)
+        tbl[sname] = entropy_score_fastq(fastq, delim=genome_delim)
+    for sname, escores in tbl.items():
+        for genome, escore in escores:
+            if tag:
+                print(f'{sname},{genome},{tag},{escore}', file=outfile)
+            else:
+                print(f'{sname},{genome},{escore}', file=outfile)
 
 
 if __name__ == '__main__':
