@@ -3,6 +3,9 @@ from setuptools import setup
 microlib_name = 'gimmebio.seqs'
 
 requirements = [
+    'numpy',
+    'click',
+    'pandas',
 ]
 
 setup(
