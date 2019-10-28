@@ -16,3 +16,5 @@ CACNES_GENOME_FILENAME = data_file('c_acnes.GCF_000008345.1_ASM834v1_genomic.fna
 CACNES_GENE_ANNOTATION_FILENAME = data_file('c_acnes.GCF_000008345.1_ASM834v1_feature_table.txt')
 
 EXAMPLE_FASTQ = data_file('sample_fastq_zymo_control.fq')
+
+MEGARES_FASTA = data_file('megares_database_v1.01.fasta')

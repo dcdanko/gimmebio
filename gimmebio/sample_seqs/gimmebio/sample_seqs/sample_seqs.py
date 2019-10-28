@@ -8,6 +8,7 @@ from .constants import (
     ECOLI_GENE_ANNOTATION_FILENAME,
     CACNES_GENOME_FILENAME,
     CACNES_GENE_ANNOTATION_FILENAME,
+    MEGARES_FASTA,
 )
 
 
@@ -47,3 +48,25 @@ class CacnesGenome(BacterialGenome):
 
     def genomic_annotation_file(self):
         return CACNES_GENE_ANNOTATION_FILENAME
+
+
+class ContigSet:
+
+    def __init__(self):
+        self.recs = []
+        self.ids = []
+        with open(self.genomic_fasta_file()) as faf:
+            for rec in SeqIO.parse(faf, 'fasta'):
+                self.contigs.append(rec)
+
+    def seqs(self):
+        return [rec.seq for rec in self.recs]
+
+    def contig_fasta_file(self):
+        raise NotImplementedError()
+
+
+class MegaresContigs(ContigSet):
+
+    def contig_fasta_file(self):
+        return MEGARES_FASTA
