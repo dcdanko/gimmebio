@@ -54,10 +54,9 @@ class ContigSet:
 
     def __init__(self):
         self.recs = []
-        self.ids = []
-        with open(self.genomic_fasta_file()) as faf:
+        with open(self.contig_fasta_file()) as faf:
             for rec in SeqIO.parse(faf, 'fasta'):
-                self.contigs.append(rec)
+                self.recs.append(rec)
 
     def seqs(self):
         return [rec.seq for rec in self.recs]
@@ -67,6 +66,16 @@ class ContigSet:
 
 
 class MegaresContigs(ContigSet):
+
+    def contig_fasta_file(self):
+        return MEGARES_FASTA
+
+
+class VanAContigs(ContigSet):
+
+    def __init__(self):
+        ContigSet.__init__()
+        self.recs = [rec for rec in selfrecs if '|VANA' in rec.id]
 
     def contig_fasta_file(self):
         return MEGARES_FASTA
