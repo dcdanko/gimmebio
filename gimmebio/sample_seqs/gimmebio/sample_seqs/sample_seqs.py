@@ -74,8 +74,8 @@ class MegaresContigs(ContigSet):
 class VanAContigs(ContigSet):
 
     def __init__(self):
-        ContigSet.__init__()
-        self.recs = [rec for rec in selfrecs if '|VANA' in rec.id]
+        super().__init__()
+        self.recs = [rec for rec in self.recs if '|VANA' in rec.id]
 
     def contig_fasta_file(self):
         return MEGARES_FASTA

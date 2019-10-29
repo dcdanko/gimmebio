@@ -4,4 +4,5 @@ from .sample_seqs import (
     EcoliGenome,
     CacnesGenome,
     MegaresContigs,
+    VanAContigs,
 )
