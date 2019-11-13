@@ -4,6 +4,7 @@ microlib_name = 'gimmebio.kmers'
 
 requirements = [
     'gimmebio.seqs',
+    'gimmebio.ram_seq'
 ]
 
 setup(
