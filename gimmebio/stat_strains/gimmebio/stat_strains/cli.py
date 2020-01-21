@@ -7,8 +7,8 @@ from os.path import basename
 from .api import (
     entropy_reduce_postion_matrices,
     entropy_reduce_position_matrix,
+    fast_entropy_reduce_postion_matrices,
 )
-from .metrics import scaling_manhattan
 
 
 @click.group('stat-strains')
@@ -17,10 +17,11 @@ def stat_strains():
 
 
 @stat_strains.command('reduce')
+@click.option('-m', '--metric', default='cosine')
 @click.option('-r', '--radius', default=0.01)
 @click.option('-o', '--outfile', type=click.File('w'), default='-')
 @click.argument('filename')
-def reduce(radius, outfile, filename):
+def reduce(metric, radius, outfile, filename):
 
         def logger(n_centroids, n_cols):
             if (n_cols % 100) == 0:
@@ -30,7 +31,7 @@ def reduce(radius, outfile, filename):
         full_reduced = entropy_reduce_position_matrix(
             matrix,
             radius,
-            scaling_manhattan,
+            metric,
             logger=logger
         )
         click.echo(full_reduced.shape, err=True)
@@ -38,10 +39,11 @@ def reduce(radius, outfile, filename):
 
 
 @stat_strains.command('concat-tables')
+@click.option('-m', '--metric', default='cosine')
 @click.option('-r', '--radius', default=0.01)
 @click.option('-o', '--outfile', type=click.File('w'), default='-')
 @click.argument('filenames', nargs=-1)
-def concat_tables(radius, outfile, filenames):
+def concat_tables(metric, radius, outfile, filenames):
 
         def _parse_matrix(filehandle):
             matrix = pd.read_csv(filehandle, index_col=0, header=0)
@@ -52,7 +54,31 @@ def concat_tables(radius, outfile, filenames):
         full_reduced = entropy_reduce_postion_matrices(
             filenames,
             radius,
-            scaling_manhattan,
+            metric,
+            matrix_parser=_parse_matrix,
+            logger=lambda x: click.echo(x, err=True)
+        )
+        click.echo(full_reduced.shape, err=True)
+        full_reduced.to_csv(outfile)
+
+
+@stat_strains.command('fast-concat-tables')
+@click.option('-m', '--metric', default='cosine')
+@click.option('-r', '--radius', default=0.01)
+@click.option('-o', '--outfile', type=click.File('w'), default='-')
+@click.argument('filenames', nargs=-1)
+def fast_concat_tables(metric, radius, outfile, filenames):
+
+        def _parse_matrix(filehandle):
+            matrix = pd.read_csv(filehandle, index_col=0, header=0)
+            pref = basename(filehandle) + '__'
+            matrix.columns = [pref + el for el in matrix.columns]
+            return matrix
+
+        full_reduced = fast_entropy_reduce_postion_matrices(
+            filenames,
+            radius,
+            metric,
             matrix_parser=_parse_matrix,
             logger=lambda x: click.echo(x, err=True)
         )
