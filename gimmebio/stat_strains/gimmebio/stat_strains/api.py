@@ -2,7 +2,10 @@
 import pandas as pd
 
 
-def entropy_reduce_position_matrix(original, r, metric, centroids=set(), sep=',', logger=None):
+def entropy_reduce_position_matrix(
+    original, r, metric,
+    min_fill=2, centroids=None, sep=',', logger=None
+    ):
     """Return an Entropy Reduced version of the input matrix.
 
     Return a pandas dataframe with a subset of columns from the
@@ -15,10 +18,12 @@ def entropy_reduce_position_matrix(original, r, metric, centroids=set(), sep=','
     Optionally pass a logger function which will get
     (num_centroids, num_columns_processed) pairs
     """
+    if not centroids:
+        centroids = set()
     for i, (col_name, col) in enumerate(original.iteritems()):
         if logger:
             logger(len(centroids), i)
-        if col.sum() == 0:
+        if (col > 0).sum() < min_fill:
             continue
         new_centroid = True
         for centroid_col_name in centroids:
@@ -31,9 +36,25 @@ def entropy_reduce_position_matrix(original, r, metric, centroids=set(), sep=','
     return original[centroids]
 
 
-def entropy_reduce_postion_matrices(filehandles, r, metric, sep=',', logger=None):
+def parse_matrix_default(filehandle):
+    return pd.read_csv(filehandle, index_col=0, header=0)
 
-    matrix = entropy_reduce_position_matrix(filehandles[0], r, metric, sep=sep, logger=logger)
-    centroids = set(matrix.columns)
+
+def entropy_reduce_postion_matrices(
+    filehandles, r, metric, min_fill=2, sep=',',
+    logger=None, matrix_parser=parse_matrix_default
+    ):
+    matrix = matrix_parser(filehandles[0])
+    matrix = entropy_reduce_position_matrix(
+        matrix, r, metric, min_fill=min_fill, sep=sep, logger=logger
+    )
     for fhandle in filehandles[1:]:
-        pass
+        centroids = set(matrix.columns)
+        new_matrix = matrix_parser(fhandle)
+        matrix = pd.concat([matrix, new_matrix], axis=1, sort=False)
+        matrix = entropy_reduce_position_matrix(
+            matrix, r, metric,
+            centroids=centroids,
+            min_fill=min_fill, sep=sep, logger=logger
+        )
+    return matrix
