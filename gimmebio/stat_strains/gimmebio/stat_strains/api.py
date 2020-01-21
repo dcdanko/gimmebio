@@ -44,17 +44,21 @@ def entropy_reduce_postion_matrices(
     filehandles, r, metric, min_fill=2, sep=',',
     logger=None, matrix_parser=parse_matrix_default
     ):
+    if logger:
+        logger(filehandles[0])
     matrix = matrix_parser(filehandles[0])
     matrix = entropy_reduce_position_matrix(
-        matrix, r, metric, min_fill=min_fill, sep=sep, logger=logger
+        matrix, r, metric, min_fill=min_fill, sep=sep
     )
     for fhandle in filehandles[1:]:
+        if logger:
+            logger(fhandle)
         centroids = set(matrix.columns)
         new_matrix = matrix_parser(fhandle)
         matrix = pd.concat([matrix, new_matrix], axis=1, sort=False)
         matrix = entropy_reduce_position_matrix(
             matrix, r, metric,
             centroids=centroids,
-            min_fill=min_fill, sep=sep, logger=logger
+            min_fill=min_fill, sep=sep
         )
     return matrix
