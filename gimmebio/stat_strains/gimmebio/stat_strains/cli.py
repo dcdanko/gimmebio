@@ -64,10 +64,18 @@ def concat_tables(metric, radius, outfile, filenames):
 
 @stat_strains.command('fast-concat-tables')
 @click.option('-m', '--metric', default='cosine')
+@click.option('-l/-n', '--file-list/--names', default=False,
+    help='Interpret filenames as lists of filenames instead of the names themselves')
 @click.option('-r', '--radius', default=0.01)
 @click.option('-o', '--outfile', type=click.File('w'), default='-')
 @click.argument('filenames', nargs=-1)
-def fast_concat_tables(metric, radius, outfile, filenames):
+def fast_concat_tables(metric, file_list, radius, outfile, filenames):
+        if file_list:
+            names = []
+            for filename in filenames:
+                with open(filename) as f:
+                    names += [line.strip() for line in f]
+            filenames = names
 
         def _parse_matrix(filehandle):
             matrix = pd.read_csv(filehandle, index_col=0, header=0)
