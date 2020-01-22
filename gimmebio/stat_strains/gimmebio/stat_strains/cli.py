@@ -47,6 +47,7 @@ def concat_tables(metric, radius, outfile, filenames):
 
         def _parse_matrix(filehandle):
             matrix = pd.read_csv(filehandle, index_col=0, header=0)
+            matrix = matrix.T[matrix.sum() > 0].T
             pref = basename(filehandle) + '__'
             matrix.columns = [pref + el for el in matrix.columns]
             return matrix
