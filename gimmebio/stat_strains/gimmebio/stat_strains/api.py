@@ -27,9 +27,11 @@ def entropy_reduce_position_matrix(
             logger(len(centroids), i)
         if (col > 0).sum() < min_fill:
             continue
-        if i == 0 and len(centroids) == 0:
+        if len(centroids) == 0:
             centroids.append(col_name)
             continue
+        print(original[centroids])
+        print(original[col_name])
         d = min(cdist(
             pd.DataFrame(original[centroids]).T,
             pd.DataFrame(original[col_name]).T,
