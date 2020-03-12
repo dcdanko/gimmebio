@@ -1,5 +1,6 @@
 
 import pandas as pd
+import random
 
 from Bio import SeqIO
 
@@ -8,8 +9,27 @@ from .constants import (
     ECOLI_GENE_ANNOTATION_FILENAME,
     CACNES_GENOME_FILENAME,
     CACNES_GENE_ANNOTATION_FILENAME,
+    SAUREUS_GENOME_FILENAME,
+    SAUREUS_GENE_ANNOTATION_FILENAME,
     MEGARES_FASTA,
 )
+
+
+def sim_one(contig, l, g):
+    pos = random.randint(0, len(contig) - 2 * l - g - 1)
+    r1 = contig[pos:pos + l]
+    r2 = contig[pos + l + g:pos + l + g + l]
+
+    def add_errs(seq, e):
+        new_seq = ''
+        for base in seq:
+            if random.random() > e:
+                new_seq += base
+                continue
+            new_seq += random.choice('ACGT')
+        return new_seq
+
+    return add_errs(r1, 0.01), add_errs(r2, 0.01)
 
 
 class BacterialGenome:
@@ -31,6 +51,11 @@ class BacterialGenome:
     def genomic_annotation_file(self):
         raise NotImplementedError()
 
+    def sim_reads(self, N, l=150):
+        longtig = str(self.contigs[0])
+        for _ in range(N):
+            yield sim_one(longtig, l, g=400)
+
 
 class EcoliGenome(BacterialGenome):
 
@@ -48,6 +73,15 @@ class CacnesGenome(BacterialGenome):
 
     def genomic_annotation_file(self):
         return CACNES_GENE_ANNOTATION_FILENAME
+
+
+class SaureusGenome(BacterialGenome):
+
+    def genomic_fasta_file(self):
+        return SAUREUS_GENOME_FILENAME
+
+    def genomic_annotation_file(self):
+        return SAUREUS_GENE_ANNOTATION_FILENAME
 
 
 class ContigSet:

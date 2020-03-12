@@ -8,12 +8,21 @@ from .api import (
     entropy_reduce_postion_matrices,
     entropy_reduce_position_matrix,
     fast_entropy_reduce_postion_matrices,
+    filter_concat_matrices,
 )
 
 
 @click.group('stat-strains')
 def stat_strains():
     pass
+
+
+@stat_strains('concat')
+@click.option('-o', '--outfile', type=click.File('w'), default='-')
+@click.argument('files', nargs=-1)
+def concat_matrices(outfile, files):
+    tbl = filter_concat_matrices(files)
+    outfile.to_csv(outfile)
 
 
 @stat_strains.command('reduce')

@@ -1,6 +1,6 @@
 
 import subprocess as sp
-from sys import stdout
+from sys import stdout, stderr
 from os.path import basename
 
 
@@ -13,8 +13,14 @@ def getLane(fname):
 
 
 def getRead(fname):
-    return int(fname.split('/')[-1].split('R')[1].split('_')[0])
-
+    try:
+        base = fname.split('/')[-1]
+        stem = base.split('R')[-1]
+        num = stem.split('_')[0]
+        return int(num)
+    except ValueError:
+        stderr.write(f'Bad filename: "{fname}"\n')
+        raise
 
 def group_filenames_by_name_read_lane(filenames):
     """Return a dict of dicts where outer keys are (sample_name, read)

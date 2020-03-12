@@ -1,8 +1,14 @@
 """Test suite for sample seqs."""
 
 from unittest import TestCase
+from os.path import dirname, join
 
 from gimmebio.seqs import needle_distance, hamming_distance
+from gimmebio.seqs.concat_lanes import (
+    group_filenames_by_sep,
+    group_filenames_by_name_read_lane,
+    concatenate_grouped_filenames,
+)
 
 
 class TestSeqs(TestCase):
@@ -27,3 +33,8 @@ class TestSeqs(TestCase):
     def test_needle_gap_middle(self):
         d = needle_distance('AACG', 'AATCG')
         self.assertAlmostEqual(d, -(4 - .6) / 4)
+
+    def test_concat_lanes(self):
+        fnames = open(join(dirname(__file__), 'fnames.txt')).read().split('\n')
+        grouped = group_filenames_by_name_read_lane(fnames)
+        concatenate_grouped_filenames(grouped, dryrun=True, dest_dir='.')

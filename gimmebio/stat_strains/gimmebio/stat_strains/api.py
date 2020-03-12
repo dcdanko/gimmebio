@@ -44,6 +44,15 @@ def parse_matrix_default(filehandle):
     return pd.read_csv(filehandle, index_col=0, header=0)
 
 
+def filter_concat_matrices(files, logger=None, matrix_parser=parse_matrix_default, min_fill=2):
+    tbls = []
+    for file in files:
+        tbl = matrix_parser(file)
+        tbl = tbl[(tbl > 0).sum() >= min_fill]  # remove near empty columns
+        tbls.append(tbl)
+    return pd.concat(tbls, axis=1)
+
+
 def entropy_reduce_postion_matrices(
     filehandles, r, metric, min_fill=2, sep=',',
     logger=None, matrix_parser=parse_matrix_default
