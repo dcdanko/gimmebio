@@ -22,7 +22,8 @@ sub_clis = [
     ('gimmebio.assembly.cli', 'assembly'),
     ('gimmebio.pji.cli', 'pji'),
     ('gimmebio.entropy_scores.cli', 'entropy'),
-    ('gimmebio.stat_strains.cli', 'stat_strains')
+    ('gimmebio.stat_strains.cli', 'stat_strains'),
+    ('gimmebio.covid.cli', 'covid')
 ]
 
 

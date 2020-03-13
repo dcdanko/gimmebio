@@ -30,7 +30,8 @@ SOURCES = {
     'gimmebio.linked_reads': 'gimmebio/linked_reads',
     'gimmebio.ram_seq': 'gimmebio/ram_seq',
     'gimmebio.text_plots': 'gimmebio/text_plots',
-    'gimmebio.stat_strains': 'gimmebio/stat_strains'
+    'gimmebio.stat_strains': 'gimmebio/stat_strains',
+    'gimmebio.cli': 'gimmebio/cli',
 }
 
 
@@ -69,7 +70,7 @@ class InstallCmd(install):
 
 setup(
     name=PACKAGE_NAME,
-    version='0.16.0',
+    version='0.17.0',
     author='David Danko',
     author_email='dcdanko@gmail.com',
     description='Utilities and explorations in computational biology',
@@ -85,7 +86,7 @@ setup(
     ] + list(SOURCES.keys()),
     entry_points={
         'console_scripts': [
-            'gimmebio=gimmebio.cli:main'
+            'gimmebio=gimmebio.cli.cli:main'
         ]
     },
     cmdclass={
