@@ -18,11 +18,11 @@ GENOMES = {
     ('Coronavirus_HKU15', 'GCF_002816235.1'): 'https://ftp.ncbi.nlm.nih.gov/genomes/refseq/viral/Coronavirus_HKU15/latest_assembly_versions/GCF_002816235.1_ASM281623v1/GCF_002816235.1_ASM281623v1_cds_from_genomic.fna.gz',
     ('Human_coronavirus_229E', 'GCF_001500975.1'): 'https://ftp.ncbi.nlm.nih.gov/genomes/refseq/viral/Human_coronavirus_229E/latest_assembly_versions/GCF_001500975.1_ViralProj306529/GCF_001500975.1_ViralProj306529_genomic.fna.gz',
     ('Human_coronavirus_HKU1', 'GCF_000858765.1'): 'https://ftp.ncbi.nlm.nih.gov/genomes/refseq/viral/Human_coronavirus_HKU1/latest_assembly_versions/GCF_000858765.1_ViralProj15139/GCF_000858765.1_ViralProj15139_genomic.fna.gz',	
-	('Human_coronavirus_NL63', 'GCF_000853865.1'): 'https://ftp.ncbi.nlm.nih.gov/genomes/refseq/viral/Human_coronavirus_NL63/latest_assembly_versions/GCF_000853865.1_ViralProj14960/GCF_000853865.1_ViralProj14960_genomic.fna.gz',
-	('Severe_acute_respiratory_syndrome-related_coronavirus', 'GCF_000864885.1'): 'https://ftp.ncbi.nlm.nih.gov/genomes/refseq/viral/Severe_acute_respiratory_syndrome-related_coronavirus/latest_assembly_versions/GCF_000864885.1_ViralProj15500/GCF_000864885.1_ViralProj15500_genomic.fna.gz',
-	('Severe_acute_respiratory_syndrome-related_coronavirus', 'GCF_009858895.2'): 'https://ftp.ncbi.nlm.nih.gov/genomes/refseq/viral/Severe_acute_respiratory_syndrome-related_coronavirus/latest_assembly_versions/GCF_009858895.2_ASM985889v3/GCF_009858895.2_ASM985889v3_genomic.fna.gz',
-	('Middle_East_respiratory_syndrome-related_coronavirus', 'GCF_000901155.1'): 'https://ftp.ncbi.nlm.nih.gov/genomes/refseq/viral/Middle_East_respiratory_syndrome-related_coronavirus/latest_assembly_versions/GCF_000901155.1_ViralProj183710/GCF_000901155.1_ViralProj183710_genomic.fna.gz',
-	('Respiratory_syncytial_virus', 'GCF_000856445.1'): 'https://ftp.ncbi.nlm.nih.gov/genomes/refseq/viral/Respiratory_syncytial_virus/latest_assembly_versions/GCF_000856445.1_ViralProj15004/GCF_000856445.1_ViralProj15004_genomic.fna.gz',
+    ('Human_coronavirus_NL63', 'GCF_000853865.1'): 'https://ftp.ncbi.nlm.nih.gov/genomes/refseq/viral/Human_coronavirus_NL63/latest_assembly_versions/GCF_000853865.1_ViralProj14960/GCF_000853865.1_ViralProj14960_genomic.fna.gz',
+    ('Severe_acute_respiratory_syndrome-related_coronavirus', 'GCF_000864885.1'): 'https://ftp.ncbi.nlm.nih.gov/genomes/refseq/viral/Severe_acute_respiratory_syndrome-related_coronavirus/latest_assembly_versions/GCF_000864885.1_ViralProj15500/GCF_000864885.1_ViralProj15500_genomic.fna.gz',
+    ('Severe_acute_respiratory_syndrome-related_coronavirus', 'GCF_009858895.2'): 'https://ftp.ncbi.nlm.nih.gov/genomes/refseq/viral/Severe_acute_respiratory_syndrome-related_coronavirus/latest_assembly_versions/GCF_009858895.2_ASM985889v3/GCF_009858895.2_ASM985889v3_genomic.fna.gz',
+    ('Middle_East_respiratory_syndrome-related_coronavirus', 'GCF_000901155.1'): 'https://ftp.ncbi.nlm.nih.gov/genomes/refseq/viral/Middle_East_respiratory_syndrome-related_coronavirus/latest_assembly_versions/GCF_000901155.1_ViralProj183710/GCF_000901155.1_ViralProj183710_genomic.fna.gz',
+    ('Respiratory_syncytial_virus', 'GCF_000856445.1'): 'https://ftp.ncbi.nlm.nih.gov/genomes/refseq/viral/Respiratory_syncytial_virus/latest_assembly_versions/GCF_000856445.1_ViralProj15004/GCF_000856445.1_ViralProj15004_genomic.fna.gz',
 	
 }
 
