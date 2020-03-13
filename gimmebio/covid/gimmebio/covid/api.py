@@ -35,7 +35,7 @@ def make_index(exc, genome_dir, logger=lambda x: None):
     for pattern in FASTA_EXTENSIONS:
         fastas += list(glob(f'{genome_dir}/*' + pattern))
     fastas = [fname for fname in fastas if fname != CONCAT_FASTA]
-    cmd = f'gunzip -c {' '.join(fastas)} > {CONCAT_FASTA}'
+    cmd = f'gunzip -c {" ".join(fastas)} > {CONCAT_FASTA}'
     sp.check_call(cmd, shell=True)
     cmd = (
         f'{exc} '
