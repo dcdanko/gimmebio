@@ -1,8 +1,10 @@
 
 import subprocess as sp
+import gzip
 from glob import glob
-from os.path import join
+from os.path import join, isfile, basename, abspath
 
+from .plots import coverage_plot, taxa_plot
 from .constants import (
     GENOMES,
     FILE_FIELD_DELIM,
@@ -22,7 +24,7 @@ def download_genomes(target_dir, logger=lambda x: None):
     for (species, strain), url in GENOMES.items():
         target_filename = FILE_FIELD_DELIM.join([species, strain, url.split('/')[-1]])
         target_filename = join(target_dir, target_filename)
-        download_one(url. target_filename)
+        download_one(url, target_filename)
 
 
 def make_index(exc, genome_dir, logger=lambda x: None):
@@ -34,32 +36,64 @@ def make_index(exc, genome_dir, logger=lambda x: None):
     fastas = []
     for pattern in FASTA_EXTENSIONS:
         fastas += list(glob(f'{genome_dir}/*' + pattern))
-    fastas = [fname for fname in fastas if fname != CONCAT_FASTA]
-    cmd = f'gunzip -c {" ".join(fastas)} > {CONCAT_FASTA}'
-    sp.check_call(cmd, shell=True)
+    concat_fname = join(genome_dir, CONCAT_FASTA)
+    fastas = [fname for fname in fastas if fname != f'{concat_fname}']
+    assert not isfile(concat_fname), f'Concat file {concat_fname} already exists. Remove it and rerun.'
+    with open(concat_fname, 'a') as concat:
+        for fasta in fastas:
+            species, strain = basename(fasta).split(FILE_FIELD_DELIM)[:2]
+            with gzip.open(fasta) as f:
+                for line in (line.decode('utf-8') for line in f):
+                    if line[0] == '>':
+                        line = f'>{species}{FILE_FIELD_DELIM}{strain}{FILE_FIELD_DELIM}{line[1:]}'
+                    concat.write(line)
     cmd = (
         f'{exc} '
-        f'-in {CONCAT_FASTA} '
+        f'-in {join(genome_dir, CONCAT_FASTA)} '
         '-dbtype nucl '
-        f'-title {BLAST_INDEX}'
+        f'-out {join(genome_dir, BLAST_INDEX)}'
     )
     sp.check_call(cmd, shell=True)
 
 
-def search_reads(blast_exc, fq2fa_exc, genome_dir, reads, outfilename, threads=1, logger=lambda x: None):
+def search_reads(blast_exc, fq2fa_exc, genome_dir, reads, outfile, threads=1, logger=lambda x: None):
     """Blast reads against the index."""
+    reads = abspath(reads)
     cmd = (
+        f'gunzip -c {reads} | '
+        f'{fq2fa_exc} | '
         f'{blast_exc} '
-        f'-db {genome_dir}/{BLAST_INDEX}'
+        f'-db {join(genome_dir, BLAST_INDEX)} '
         '-outfmt 6 '
         '-perc_identity 80 '
         f'-num_threads {threads} '
-        f'-query <(gunzip -c {reads} | {fq2fa_exc}) '
-        f'> {outfilename}'
     )
-    sp.check_call(cmd, shell=True)
+    sp.run(cmd, check=True, shell=True, stdout=outfile)
 
 
 def condense_alignment(outfile, aln_file, logger=lambda x: None):
     """Call viruses from the alignment file."""
     pass
+
+
+def make_report(m8_filename, image_filename):
+    """Make coverage plots for all species detected in the m8 table."""
+    tbl = pd.read_csv(
+        m8_filename, sep='\t',
+        names=[
+            'qseqid', 'sseqid', 'pident', 'length', 'mismatch', 'gapopen',
+            'qstart', 'qend', 'sstart', 'send', 'evalue', 'bitscore'
+        ]
+    )
+    cov = coverage_plot(tbl)
+    cov.save(image_filename)
+
+
+def search_report(blast_exc, fq2fa_exc, genome_dir, reads, m8_filename, image_filename,
+                  threads=1, logger=lambda x: None):
+    """Search and make a coverage plot."""
+    search_reads(
+        blast_exc, fq2fa_exc, genome_dir, reads, m8_filename,
+        threads=threads, logger=logger
+    )
+    make_report(m8_filename, image_filename)

@@ -7,11 +7,12 @@ requirements = [
     'numpy',
     'pandas',
     'click',
+    'plotnine',
 ]
 
 setup(
     name=microlib_name,
-    version='0.1.1',
+    version='0.2.0',
     author='David Danko',
     author_email='dcdanko@gmail.com',
     license='MIT license',

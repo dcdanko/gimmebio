@@ -1,11 +1,11 @@
 
 GENOMES = {
     ('Influenza_A', 'GCF_000865085.1'): 'ftp://ftp.ncbi.nlm.nih.gov/genomes/refseq/viral/Influenza_A_virus/reference/GCF_000865085.1_ViralMultiSegProj15622/GCF_000865085.1_ViralMultiSegProj15622_genomic.fna.gz',
-    ('Influenza_B','GCF_000820495.2'): 'ftp://ftp.ncbi.nlm.nih.gov/genomes/refseq/viral/Influenza_B_virus/latest_assembly_versions/GCF_000820495.2_ViralMultiSegProj14656/GCF_000820495.2_ViralMultiSegProj14656_genomic.fna.gz',
+    ('Influenza_B', 'GCF_000820495.2'): 'ftp://ftp.ncbi.nlm.nih.gov/genomes/refseq/viral/Influenza_B_virus/latest_assembly_versions/GCF_000820495.2_ViralMultiSegProj14656/GCF_000820495.2_ViralMultiSegProj14656_genomic.fna.gz',
     ('Influenza_C', 'GCF_000856665.10'): 'ftp://ftp.ncbi.nlm.nih.gov/genomes/refseq/viral/Influenza_C_virus/reference/GCF_000856665.10_ViralMultiSegProj15055/GCF_000856665.10_ViralMultiSegProj15055_genomic.fna.gz',
     ('Influenza_D', 'GCF_002867775.1'): 'ftp://ftp.ncbi.nlm.nih.gov/genomes/refseq/viral/Influenza_D_virus/latest_assembly_versions/GCF_002867775.1_ASM286777v1/GCF_002867775.1_ASM286777v1_genomic.fna.gz',
     ('Rhinovirus_A', 'GCF_000862245.1'): 'ftp://ftp.ncbi.nlm.nih.gov/genomes/refseq/viral/Rhinovirus_A/latest_assembly_versions/GCF_000862245.1_ViralProj15330/GCF_000862245.1_ViralProj15330_genomic.fna.gz',
-    ('Rhinovirus_B' 'GCF_000861265.1'): 'ftp://ftp.ncbi.nlm.nih.gov/genomes/refseq/viral/Rhinovirus_B/latest_assembly_versions/GCF_000861265.1_ViralProj15309/GCF_000861265.1_ViralProj15309_genomic.fna.gz',
+    ('Rhinovirus_B', 'GCF_000861265.1'): 'ftp://ftp.ncbi.nlm.nih.gov/genomes/refseq/viral/Rhinovirus_B/latest_assembly_versions/GCF_000861265.1_ViralProj15309/GCF_000861265.1_ViralProj15309_genomic.fna.gz',
     ('Rhinovirus_C', 'GCF_000872325.1'): 'ftp://ftp.ncbi.nlm.nih.gov/genomes/refseq/viral/Rhinovirus_C/latest_assembly_versions/GCF_000872325.1_ViralProj27901/GCF_000872325.1_ViralProj27901_genomic.fna.gz',
     ('Hepatitis_B','GCF_000861825.2'): 'ftp://ftp.ncbi.nlm.nih.gov/genomes/refseq/viral/Hepatitis_B_virus/latest_assembly_versions/GCF_000861825.2_ViralProj15428/GCF_000861825.2_ViralProj15428_genomic.fna.gz',
     ('Norwalk', 'GCF_000868425.1'): 'ftp://ftp.ncbi.nlm.nih.gov/genomes/refseq/viral/Norwalk_virus/reference/GCF_000868425.1_ViralProj17577/GCF_000868425.1_ViralProj17577_genomic.fna.gz',
@@ -31,3 +31,5 @@ FILE_FIELD_DELIM = '___'
 FASTA_EXTENSIONS = ['.fna.gz', '.fa.gz']
 CONCAT_FASTA = 'all_concat.fa'
 BLAST_INDEX = 'covid_blast_index'
+
+KRAKEN2_DB_URL = 'https://s3.wasabisys.com/metasub/covid/kraken2_covid_2020_03_13.tar.gz'
