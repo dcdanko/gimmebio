@@ -1,6 +1,7 @@
 
 import subprocess as sp
 import gzip
+import pandas as pd
 from glob import glob
 from os.path import join, isfile, basename, abspath
 
@@ -76,7 +77,7 @@ def condense_alignment(outfile, aln_file, logger=lambda x: None):
     pass
 
 
-def make_report(m8_filename, image_filename):
+def make_report(m8_filename, image_filename, logger=lambda x: None):
     """Make coverage plots for all species detected in the m8 table."""
     tbl = pd.read_csv(
         m8_filename, sep='\t',
