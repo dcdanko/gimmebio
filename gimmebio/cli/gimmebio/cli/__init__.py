@@ -1,0 +1,2 @@
+
+from .mycli import main
