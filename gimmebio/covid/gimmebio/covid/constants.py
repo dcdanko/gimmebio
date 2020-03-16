@@ -33,3 +33,4 @@ CONCAT_FASTA = 'all_concat.fa'
 BLAST_INDEX = 'covid_blast_index'
 
 KRAKEN2_DB_URL = 'https://s3.wasabisys.com/metasub/covid/kraken2_covid_2020_03_13.tar.gz'
+KRAKEN2_PATH = 'kraken2_covid_2020_03_13'

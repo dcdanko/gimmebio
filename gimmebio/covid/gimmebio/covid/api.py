@@ -12,6 +12,8 @@ from .constants import (
     FASTA_EXTENSIONS,
     CONCAT_FASTA,
     BLAST_INDEX,
+    KRAKEN2_PATH,
+    KRAKEN2_DB_URL,
 )
 
 
@@ -26,6 +28,21 @@ def download_genomes(target_dir, logger=lambda x: None):
         target_filename = FILE_FIELD_DELIM.join([species, strain, url.split('/')[-1]])
         target_filename = join(target_dir, target_filename)
         download_one(url, target_filename)
+
+
+def download_hg38(target_dir, logger=lambda x: None):
+    """Download a Bowtie2 index for HG38 with alt contigs."""
+    pass
+
+
+def download_kraken2(target_dir, logger=lambda x: None):
+    """Download a custom Kraken2 database for detecting COVID."""
+        cmd = (
+            f'cd {target_dir} && '
+            f'wget {KRAKEN2_DB_URL} && '
+            f'tar -xzf {KRAKEN2_DB_URL.split("/")[-1]} '
+        )
+        sp.check_call(cmd, shell=True)
 
 
 def make_index(exc, genome_dir, logger=lambda x: None):
@@ -55,6 +72,29 @@ def make_index(exc, genome_dir, logger=lambda x: None):
         f'-out {join(genome_dir, BLAST_INDEX)}'
     )
     sp.check_call(cmd, shell=True)
+
+
+def filter_human_reads(bwt2_exc, genome_dir, reads, outfile, threads=1, logger=lambda x: None):
+    """Remove Human reads and write them to `outfile` as a fastq."""
+    pass
+
+
+def kraken2_search_reads(kraken2_exc, genome_dir, reads, outprefix, threads=1, logger=lambda x: None):
+    """Use Kraken2 to make a fast pass report on reads. Write report to outfile."""
+    reads = abspath(reads)
+    cmd = (
+        f'{kraken2_exc} '
+        f'--db {join(genome_dir, KRAKEN2_PATH)} '
+        f'--threads {threads} '
+        f'--unclassified-out ${outprefix}.unclassified_num '
+        f'--classified-out ${outprefix}.classified_num '
+        f'--output ${outprefix}.kraken2_output '
+        f'--report ${outprefix}.kraken2_report '
+        f'--report-zero-counts '
+        f'--gzip-compressed '
+        f'{reads}'
+    )
+    sp.run(cmd, check=True, shell=True)
 
 
 def search_reads(blast_exc, fq2fa_exc, genome_dir, reads, outfile, threads=1, logger=lambda x: None):
