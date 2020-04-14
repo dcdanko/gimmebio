@@ -22,7 +22,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'gimmebio=gimmebio.cli.cli:main'
+            'gimmebio=gimmebio.cli:main'
         ]
     },
     namespace_packages=['gimmebio'],

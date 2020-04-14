@@ -51,8 +51,10 @@ class BacterialGenome:
     def genomic_annotation_file(self):
         raise NotImplementedError()
 
-    def sim_reads(self, N, l=150):
+    def sim_reads(self, N, l=150, max_pos=1000000000000):
         longtig = str(self.contigs[0])
+        max_pos = min(len(longtig), max_pos)
+        longtig = longtig[:max_pos]
         for _ in range(N):
             yield sim_one(longtig, l, g=400)
 

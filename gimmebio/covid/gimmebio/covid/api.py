@@ -37,12 +37,12 @@ def download_hg38(target_dir, logger=lambda x: None):
 
 def download_kraken2(target_dir, logger=lambda x: None):
     """Download a custom Kraken2 database for detecting COVID."""
-        cmd = (
-            f'cd {target_dir} && '
-            f'wget {KRAKEN2_DB_URL} && '
-            f'tar -xzf {KRAKEN2_DB_URL.split("/")[-1]} '
-        )
-        sp.check_call(cmd, shell=True)
+    cmd = (
+        f'cd {target_dir} && '
+        f'wget {KRAKEN2_DB_URL} && '
+        f'tar -xzf {KRAKEN2_DB_URL.split("/")[-1]} '
+    )
+    sp.check_call(cmd, shell=True)
 
 
 def make_index(exc, genome_dir, logger=lambda x: None):

@@ -36,6 +36,7 @@ def add_submodule_cli(module_name, cli_main_name):
             print(f'Unable to import {module_name}', file=stderr)
     except:
         print(f'Other error importing {module_name}', file=stderr)
+        raise
 
 
 for module_name, cli_main_name in sub_clis:
@@ -43,6 +44,7 @@ for module_name, cli_main_name in sub_clis:
         add_submodule_cli(module_name, cli_main_name)
     except:
         print(f'Error adding {module_name}', file=stderr)
+        raise
 
 
 if __name__ == "__main__":

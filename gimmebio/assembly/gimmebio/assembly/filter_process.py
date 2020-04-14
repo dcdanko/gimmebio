@@ -67,7 +67,7 @@ def rpkm_from_one_bam(bamfile, contig_lengths, groups={}):
     for aln in sam:
         if aln.is_unmapped:
             continue
-        if aln.is_secondary or aln.is_duplicate or aln.is_supplementary:
+        if aln.is_supplementary or aln.is_duplicate or aln.is_supplementary:
             continue
         if aln.is_read2:  # debatable
             continue

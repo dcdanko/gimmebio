@@ -1,6 +1,12 @@
 
 import click
+import pysam
+import pandas as pd
 from os import environ
+from plotnine import *
+from .svs import (
+    tabulate_split_read_signatures,
+)
 
 from .api import (
     download_genomes,
@@ -16,6 +22,54 @@ from .api import (
 @click.group()
 def covid():
     pass
+
+
+@covid.group('sv')
+def cli_sv():
+    pass
+
+
+@cli_sv.command('split-reads')
+@click.option('-g', '--min-gap', default=100)
+@click.option('-p/-a', '--primary/--all', default=False)
+@click.option('-o', '--outfile', default='-', type=click.File('w'))
+@click.argument('bams', nargs=-1)
+def cli_split_reads(min_gap, primary, outfile, bams):
+    tbls = []
+    for bam in bams:
+        click.echo(bam, err=True)
+        samfile = pysam.AlignmentFile(bam, "rb")
+        tbl = tabulate_split_read_signatures(samfile, min_gap=min_gap, primary_only=primary)
+        tbl['sample_name'] = bam.split('/')[-1].split('.')[0]
+        tbls.append(tbl)
+    tbl = pd.concat(tbls)
+    click.echo(tbl.shape, err=True)
+    tbl.to_csv(outfile)
+
+
+@cli_sv.command('plot-split')
+@click.option('-o', '--outfile', default='-', type=click.File('wb'))
+@click.argument('tbl')
+def cli_split_reads(outfile, tbl):
+    tbl = pd.read_csv(tbl, index_col=0)
+    tbl = tbl.groupby('sample_name').apply(lambda t: t.sample(min(1000, t.shape[0])))
+    plot = (
+        ggplot(tbl, aes(x='min_pos', y='max_pos', color='sample_name')) +
+            geom_point(size=2, alpha=0.1) +
+            geom_density_2d(color='black') +
+            ylab('Rightmost Position') +
+            xlab('Leftmost Position') +
+            ggtitle('Split Signature') + 
+            scale_color_brewer(type='qualitative', palette=6) +
+            labs(color='Sample') +
+            theme(
+                text=element_text(size=20),
+                legend_position='right',
+                figure_size=(12, 8),
+                panel_border=element_rect(colour="black", fill='none', size=1),
+            )
+    )
+    plot.save(outfile)
 
 
 @covid.command('download')
