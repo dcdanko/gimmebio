@@ -5,11 +5,12 @@ microlib_name = 'gimmebio.data_manager'
 requirements = [
     'pandas',
     'click',
+    'boto3',
 ]
 
 setup(
     name=microlib_name,
-    version='0.1.0',
+    version='0.2.14',
     author='David Danko',
     author_email='dcdanko@gmail.com',
     license='MIT license',

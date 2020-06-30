@@ -52,15 +52,46 @@ def cli_split_reads(min_gap, primary, outfile, bams):
 @click.argument('tbl')
 def cli_split_reads(outfile, tbl):
     tbl = pd.read_csv(tbl, index_col=0)
-    tbl = tbl.groupby('sample_name').apply(lambda t: t.sample(min(1000, t.shape[0])))
+    # tbl = tbl.groupby('sample_name').apply(lambda t: t.sample(min(1000, t.shape[0])))
     plot = (
-        ggplot(tbl, aes(x='min_pos', y='max_pos', color='sample_name')) +
-            geom_point(size=2, alpha=0.1) +
-            geom_density_2d(color='black') +
-            ylab('Rightmost Position') +
-            xlab('Leftmost Position') +
+        ggplot(tbl, aes(x='position', y='split_position', color='strand')) +
+            geom_point(size=2, alpha=1) +
+            geom_density_2d() +
+            ylab('Position') +
+            xlab('Split Position') +
             ggtitle('Split Signature') + 
             scale_color_brewer(type='qualitative', palette=6) +
+            labs(color='Strand') +
+            theme(
+                text=element_text(size=20),
+                legend_position='right',
+                figure_size=(8, 8),
+                panel_border=element_rect(colour="black", fill='none', size=1),
+            )
+    )
+    plot.save(outfile)
+
+
+@cli_sv.command('plot-split-2')
+@click.option('-o', '--outfile', default='-', type=click.File('wb'))
+@click.argument('tbl')
+def cli_split_reads(outfile, tbl):
+    tbl = pd.read_csv(tbl, index_col=0)
+    tblA = tbl.query('split_position <= 100')
+    tblA['kind'] = 'Split Position <= 100'
+    tblA['X'] = tblA['position']
+    tblB = tbl.query('position <= 100')
+    tblB['kind'] = 'Position <= 100'
+    tblB['X'] = tblB['split_position']
+    tbl = pd.concat([tblA, tblB])
+    plot = (
+        ggplot(tbl, aes(x='X', fill='strand')) +
+            geom_histogram(binwidth=1) +
+            facet_wrap('~kind', ncol=1) +
+            ggtitle('Split Signature') + 
+            scale_y_log10() +
+            xlim(26466, 26508) +
+            scale_fill_brewer(type='qualitative', palette=6) +
             labs(color='Sample') +
             theme(
                 text=element_text(size=20),
@@ -70,7 +101,6 @@ def cli_split_reads(outfile, tbl):
             )
     )
     plot.save(outfile)
-
 
 @covid.command('download')
 @click.argument('target_dir', type=click.Path())

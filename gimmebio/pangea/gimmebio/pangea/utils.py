@@ -25,6 +25,6 @@ def caching_get_sample(lib, sample_name):
 
 
 @lru_cache(maxsize=1000)
-def caching_get_sample_ar(sample, module_name):
+def caching_get_sample_ar(sample, module_name, replicate=None):
     ar = sample.analysis_result(module_name).idem()
     return ar

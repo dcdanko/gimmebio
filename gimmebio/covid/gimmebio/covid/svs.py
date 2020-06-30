@@ -5,12 +5,19 @@ import pandas as pd
 def process_one_split_read(aln):
     chimera_tag = aln.get_tag('SA')
     split_pos = int(chimera_tag.split(',')[1])
+    split_is_reverse = chimera_tag.split(',')[2] != '+'
+    strand = 'both_pos'
+    if split_is_reverse and aln.is_reverse:
+        strand = 'both_neg'
+    elif split_is_reverse or aln.is_reverse:
+        strand = 'opposite'
     return {
         'read_name': aln.query_name,
         'position': aln.reference_start,
         'mate_position': aln.next_reference_start,
         'is_primary_alignment': not aln.is_supplementary,
         'split_position': split_pos,
+        'strand': strand,
         'min_pos': min(aln.reference_start, split_pos),
         'max_pos': max(aln.reference_start, split_pos),
     }

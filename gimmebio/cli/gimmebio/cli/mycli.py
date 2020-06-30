@@ -24,6 +24,8 @@ sub_clis = [
     ('gimmebio.entropy_scores.cli', 'entropy'),
     # ('gimmebio.stat_strains.cli', 'stat_strains'),
     ('gimmebio.covid.cli', 'covid'),
+    ('gimmebio.pangea.cli', 'pangea'),
+    ('gimmebio.data_manager.cli', 'data'),
 ]
 
 
