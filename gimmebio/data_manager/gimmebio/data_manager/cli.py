@@ -122,8 +122,11 @@ def cli_run_md5(database):
     session = get_session(database)
     for i, local_file in enumerate(session.query(LocalFile).all()):
         click.echo(f'Checksuming {local_file}')
-        local_file.add_checksum()
-        session.commit()
+        try:
+            local_file.add_checksum()
+            session.commit()
+        except Exception:
+            click.echo(f'Checksum failed for {local_file}')
     session.commit()
 
 
@@ -134,8 +137,11 @@ def cli_run_md5(database):
     session = get_session(database)
     for i, s3_file in enumerate(session.query(S3File).all()):
         click.echo(f'Uploading {s3_file} to bucket: {s3_file.bucket_name} path: {s3_file.s3_file_path}')
-        s3_file.upload()
-        session.commit()
+        try:
+            s3_file.upload()
+            session.commit()
+        except Exception:
+            click.echo(f'Upload failed for {s3_file}')
     session.commit()
 
 
@@ -147,8 +153,11 @@ def cli_run_md5(database, download_dir):
     session = get_session(database)
     for i, s3_file in enumerate(session.query(S3File).all()):
         click.echo(f'Downloading {s3_file}')
-        s3_file.download_then_add_checksum(download_dir)
-        session.commit()
+        try:
+            s3_file.download_then_add_checksum(download_dir)
+            session.commit()
+        except Exception:
+            click.echo(f'Download or checksum failed for {s3_file}')
     session.commit()
 
 
